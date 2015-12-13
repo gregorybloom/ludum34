@@ -19,6 +19,11 @@ CircleEnemy.prototype.init = function()
 	this.cooldur = 0;
 	this.fired = false;
 	this.unitSpeed = 0.04;
+	this.unitSpeedH = 0.1;
+
+	this.turnclock = GAMEMODEL.gameClock.elapsedMS();
+	this.turntime = 1500;
+	this.turnheading = {x:0,y:0};
 
 	this.actionMode = "MODE_STILL";
 	this.updatePosition();
@@ -92,10 +97,22 @@ CircleEnemy.prototype.setPath = function(type)
 	move.progress = lprog;
 	move.path = lpath;
 	this.moveModule.moveScriptSet[0] = move;
+
+	this.makeTurn(this.unitSpeedH, {x:1,y:0} );
+};
+
+CircleEnemy.prototype.makeTurn = function(speed,heading) {
 	
-		var inc2 = IncrementBySpeed.alloc();	inc2.spdPerTick = this.unitSpeed;
-		var head2 = HeadingByVector.alloc();	head2.setHeadingByVector({x:1,y:0}, 500000*this.unitSpeed);
-		var durt2 = DurationByTime.alloc();	durt2.duration = 500;
+		if(this.moveModule.moveScriptSet[1] instanceof MoveActor)
+		{
+			delete this.moveModule.moveScriptSet[1];
+		}
+
+		this.turnheading = heading;
+
+		var inc2 = IncrementBySpeed.alloc();	inc2.spdPerTick = speed;
+		var head2 = HeadingByVector.alloc();	head2.setHeadingByVector(heading, 500000*speed);
+		var durt2 = DurationByTime.alloc();	durt2.duration = this.turntime;
 		var lprog2 = LinearProgress.alloc();
 		var lpath2 = LinearPath.alloc();
 
@@ -108,8 +125,7 @@ CircleEnemy.prototype.setPath = function(type)
 		move2.path = lpath2;
 
 		this.moveModule.moveScriptSet[1] = move2;
-	/**/
-};
+}
 
 CircleEnemy.prototype.updateCurrentAnimation = function()
 {
@@ -117,6 +133,15 @@ CircleEnemy.prototype.updateCurrentAnimation = function()
 
 CircleEnemy.prototype.updateMode = function()
 {
+	var curtime = GAMEMODEL.gameClock.elapsedMS();
+	if((this.turnclock+this.turntime) <= curtime) 
+	{
+		if(this.turnheading.x < 0)	this.turnheading.x = 1;
+		else 						this.turnheading.x = -1;
+
+		this.turnclock = GAMEMODEL.gameClock.elapsedMS();
+		this.makeTurn(this.unitSpeedH, this.turnheading );
+	}
 	//	var timeLeft = this.cooldown + this.cooldur - GAMEMODEL.gameClock.elapsedMS();
 	//	this.shoot();
 	//	if(timeLeft <= 0)		this.decideAction();

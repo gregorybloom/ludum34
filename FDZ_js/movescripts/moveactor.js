@@ -8,6 +8,8 @@ MoveActor.prototype.identity = function() {
 	return ('MoveActor (?)');
 };
 MoveActor.prototype.init = function() {
+	this.alive = true;
+
 	this.startPt = {x:0,y:0};
 	this.currEndPt = {x:0,y:0};
 	this.lastEndPt = {x:0,y:0};

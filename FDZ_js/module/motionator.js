@@ -22,7 +22,8 @@ MovingActorModule.prototype.eraseMovingScripts = function() {
 MovingActorModule.prototype.update = function() {
 	for(var i in this.moveScriptSet)
 	{
-		this.moveScriptSet[i].update();
+		if(this.moveScriptSet[i].alive)		this.moveScriptSet[i].update();
+		else								delete this.moveScriptSet[i];
 	}
 };
 
