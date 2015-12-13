@@ -20,8 +20,8 @@ CharActor.prototype.init = function() {
 	this.drawShift = {x:0,y:0};
 	
 	this.heading = {x:0,y:0};
-	this.unitSpeedX = 0.18;
-	this.unitSpeedY = 0.18;
+	this.unitSpeedX = 0.21;
+	this.unitSpeedY = 0.21;
 	this.ticksDiff = 0;
 
 	this.dirTimeOut = 40;
@@ -76,11 +76,20 @@ CharActor.prototype.updateCurrentMode = function() {
 	var D = (GAMECONTROL.getKeyState(keyids['KEY_ARROW_DOWN']) || GAMECONTROL.getKeyState(keyids['KEY_S']));
 //	console.log(R +''+ L +''+ U +''+ D);
 
-	if( ( !D && !U ) || ( D && U ) )	this.heading.y = 0;
-	else if (D)							this.heading.y = 1;	
+	if( !D && !U )					this.heading.y = 0;
+	else if ( D && U ) {
+		if( this.keyTimeList[0] < this.keyTimeList[2]  )		U = false;
+		else if( this.keyTimeList[0] > this.keyTimeList[2]  )	D = false;
+	}
+	if( !R && !L )						this.heading.x = 0;
+	else if ( R && L ) {
+		if( this.keyTimeList[1] < this.keyTimeList[3]  )		R = false;
+		else if( this.keyTimeList[1] > this.keyTimeList[3]  )	L = false;
+	}
+
+	if (D)								this.heading.y = 1;	
 	else if (U)							this.heading.y = -1;	
-	if( ( !R && !L ) || ( R && L ) )	this.heading.x = 0;
-	else if (R)							this.heading.x = 1;	
+	if (R)							this.heading.x = 1;	
 	else if (L)							this.heading.x = -1;	
 
 	if(this.actionMode == "MODE_STILL" || this.actionMode == "MODE_MOVING")
@@ -137,53 +146,33 @@ CharActor.prototype.readInput = function(inputobj)
 	if(keyids['KEY_ARROW_UP'] == inputobj.keyID || keyids['KEY_W'] == inputobj.keyID)
 	{
 		keyused = true;
-		if(inputobj.keypress == false)
-		{
-//			this.heading.y = 0;
-			this.keyTimeList[0] = GAMEMODEL.gameClock.elapsedMS();
-		}
 		if(inputobj.keypress == true)
 		{
-//			this.heading.y = -1;
+			this.keyTimeList[0] = GAMEMODEL.gameClock.elapsedMS();
 		}
 	}
 	if(keyids['KEY_ARROW_DOWN'] == inputobj.keyID || keyids['KEY_S'] == inputobj.keyID)
 	{
 		keyused = true;
-		if(inputobj.keypress == false)
-		{
-//			this.heading.y = 0;
-			this.keyTimeList[2] = GAMEMODEL.gameClock.elapsedMS();
-		}
 		if(inputobj.keypress == true)
 		{
-//			this.heading.y = 1;
+			this.keyTimeList[2] = GAMEMODEL.gameClock.elapsedMS();
 		}
 	}
 	if(keyids['KEY_ARROW_RIGHT'] == inputobj.keyID || keyids['KEY_D'] == inputobj.keyID)
 	{
 		keyused = true;
-		if(inputobj.keypress == false)
-		{
-//			this.heading.x = 0;
-			this.keyTimeList[1] = GAMEMODEL.gameClock.elapsedMS();
-		}
 		if(inputobj.keypress == true)
 		{
-//			this.heading.x = 1;
+			this.keyTimeList[1] = GAMEMODEL.gameClock.elapsedMS();
 		}
 	}
 	if(keyids['KEY_ARROW_LEFT'] == inputobj.keyID || keyids['KEY_A'] == inputobj.keyID)
 	{
 		keyused = true;
-		if(inputobj.keypress == false)
-		{
-//			this.heading.x = 0;
-			this.keyTimeList[3] = GAMEMODEL.gameClock.elapsedMS();
-		}
 		if(inputobj.keypress == true)
 		{
-//			this.heading.x = -1;
+			this.keyTimeList[3] = GAMEMODEL.gameClock.elapsedMS();
 		}
 	}
 	return keyused;
