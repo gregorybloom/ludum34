@@ -12,12 +12,14 @@ CircleEnemy.prototype.identity = function()
 CircleEnemy.prototype.init = function()
 {
 	EnemyActor.prototype.init.call(this);
-	this.size = {w: 17, h: 17};
+	this.radius = 20;
+	this.size = {w: (this.radius*2), h: (this.radius*2)};
 	this.position = {x: 0, y: 0};
 	this.cooldown = GAMEMODEL.gameClock.elapsedMS();
 	this.cooldur = 0;
 	this.fired = false;
 	this.unitSpeed = 0.04;
+
 	this.actionMode = "MODE_STILL";
 	this.updatePosition();
 	this.moveModule = MovingActorModule.alloc();
@@ -33,7 +35,7 @@ CircleEnemy.prototype.draw = function()
 {
 	//	EnemyActor.prototype.draw.call(this);
 	GAMEVIEW.drawBox(this.absBox, "#660000");
-	GAMEVIEW.drawCircle(this.position, 20, "#FF0000", 1);
+	GAMEVIEW.drawCircle(this.position, this.radius, "#FF0000", 1);
 };
 
 CircleEnemy.prototype.update = function()
@@ -90,10 +92,10 @@ CircleEnemy.prototype.setPath = function(type)
 	move.progress = lprog;
 	move.path = lpath;
 	this.moveModule.moveScriptSet[0] = move;
-	/*
+	
 		var inc2 = IncrementBySpeed.alloc();	inc2.spdPerTick = this.unitSpeed;
-		var head2 = HeadingByVector.alloc();	head2.setHeadingByVector({x:1,y:0}, 5000*this.unitSpeed);
-		var durt2 = DurationByTime.alloc();	durt2.duration = 500000;
+		var head2 = HeadingByVector.alloc();	head2.setHeadingByVector({x:1,y:0}, 500000*this.unitSpeed);
+		var durt2 = DurationByTime.alloc();	durt2.duration = 500;
 		var lprog2 = LinearProgress.alloc();
 		var lpath2 = LinearPath.alloc();
 
@@ -119,6 +121,31 @@ CircleEnemy.prototype.updateMode = function()
 	//	this.shoot();
 	//	if(timeLeft <= 0)		this.decideAction();
 };
+
+CircleEnemy.prototype.collide = function(act) {
+	Actor.prototype.collide.call(this,act);
+};
+CircleEnemy.prototype.collideType = function(act) {
+	if(act instanceof ShotActor)		return true;
+	return false;
+};
+CircleEnemy.prototype.collideVs = function(act) {
+	if(act instanceof ShotActor)
+	{
+		var d1 = (act.position.x - this.position.x);
+		var d2 = (act.position.y - this.position.y);
+		var d = d1*d1 + d2*d2;
+
+		var r = (act.radius+this.radius);
+		r=r*r;
+
+		if(d <= r) {
+			act.alive = false;
+			this.alive = false;
+		}
+	}
+};
+
 
 CircleEnemy.prototype.shoot = function()
 {

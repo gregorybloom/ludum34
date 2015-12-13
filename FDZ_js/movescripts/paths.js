@@ -1,6 +1,7 @@
 
 
 
+
 function LinearPath() {
 }
 LinearPath.prototype = new MoveActorBasicPath;

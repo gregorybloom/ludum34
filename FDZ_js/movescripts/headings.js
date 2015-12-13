@@ -121,3 +121,6 @@ HeadingByVector.alloc = function() {
 	vc.init();
 	return vc;
 };
+
+
+

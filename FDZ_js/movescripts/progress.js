@@ -1,6 +1,5 @@
 
 
-
 function LinearProgress() {
 }
 LinearProgress.prototype = new MoveActorBasicProgress;

@@ -137,18 +137,33 @@ MoveActor.prototype.update = function() {
 	if(this.movingActor != null)	this.movingActor.updatePosition( newPt );
 	if(this.heading != null)
 	{
-		if(this.heading.reachedHeading( newBaseT, this.newPrT )==true)	this.kill();
+		if(this.heading.reachedHeading( newBaseT, this.newPrT )==true)	this.clear();
 	}
 	if(this.duration != null)
 	{
-		if(this.duration.durationReached()==true)	this.kill();
+		if(this.duration.durationReached()==true)	this.clear();
 	}
 	
 	
 	
 };
-
 MoveActor.prototype.kill = function() {
+	this.clear();
+};
+MoveActor.prototype.clear = function() {
+	if(this.increment != null)	delete this.increment.parentMoveActor;
+	if(this.heading != null)	delete this.heading.parentMoveActor;
+	if(this.duration != null)	delete this.duration.parentMoveActor;
+	if(this.progress != null)	delete this.progress.parentMoveActor;
+	if(this.path != null)		delete this.path.parentMoveActor;
+
+	this.increment = null;
+	this.heading = null;
+	this.duration = null;	
+	this.progress = null;
+	this.path = null;
+
+	this.alive=false;
 };
 
 MoveActor.alloc = function() {
