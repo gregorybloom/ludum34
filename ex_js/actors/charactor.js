@@ -92,7 +92,7 @@ CharActor.prototype.updateCurrentMode = function() {
 CharActor.prototype.updateCurrentAnimation = function() {
 };
 CharActor.prototype.shoot = function() {
-	var rock = RockActor.alloc();
+	var rock = ShotActor.alloc();
 	rock.updatePosition(this.position);
 	rock.heading.x=0;
 	rock.heading.y=-1;

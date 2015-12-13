@@ -50,11 +50,11 @@ CamField.prototype.collide = function(act) {
 
 CamField.prototype.collideType = function(act) {
 	if(act instanceof CharActor)	return true;
-	if(act instanceof RockActor)	return true;
+	if(act instanceof ShotActor)	return true;
 	return false;
 };
 CamField.prototype.collideVs = function( actor ) {
-    if(actor instanceof RockActor) {
+    if(actor instanceof ShotActor) {
 		if( actor.absBox.y < this.absBox.y && this.borderBlock.indexOf("N") !== -1)
 		{
 			actor.alive = false;

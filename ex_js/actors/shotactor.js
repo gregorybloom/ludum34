@@ -2,13 +2,13 @@
 
 
 
-function RockActor() {
+function ShotActor() {
 }
-RockActor.prototype = new Actor;
-RockActor.prototype.identity = function() {
-	return ('RockActor (' +this._dom.id+ ')');
+ShotActor.prototype = new Actor;
+ShotActor.prototype.identity = function() {
+	return ('ShotActor (' +this._dom.id+ ')');
 };
-RockActor.prototype.init = function() {
+ShotActor.prototype.init = function() {
 	Actor.prototype.init.call(this);
 
 	this.size = {w:8,h:8};
@@ -22,7 +22,7 @@ RockActor.prototype.init = function() {
 	this.cooldur = 10000;
 	
 	this.radius=4;
-	this.unitSpeed = 0.15;
+	this.unitSpeed = 0.25;
 	this.firer=null;
 	
 	this.actionMode = "MODE_STILL";
@@ -38,7 +38,7 @@ RockActor.prototype.init = function() {
 	this.moveModule.target = this;	
 };
 
-RockActor.prototype.draw = function() {
+ShotActor.prototype.draw = function() {
 	Actor.prototype.draw.call(this);
 	GAMEVIEW.fillCircle(this.absBox,this.radius,"#000000");
 //	GAMEVIEW.drawEllipses(this.absPosition, this.size, true, 0, "#000000");
@@ -51,7 +51,7 @@ RockActor.prototype.draw = function() {
 //		GAMEVIEW.drawCircle(this.absPosition,100);		
 	}	/**/
 };
-RockActor.prototype.update = function() {
+ShotActor.prototype.update = function() {
 	Actor.prototype.update.call(this);
 
 	if(this.direction == 0)			this.heading = {x:0, y:-1};
@@ -74,13 +74,13 @@ RockActor.prototype.update = function() {
 //	if(this.animateModule != null)	this.animateModule.update();
 };
 
-RockActor.prototype.collideType = function(act) {
+ShotActor.prototype.collideType = function(act) {
 	if(act == this.firer)		return false;
 	if(act instanceof CharActor)	return true;
 	if(act instanceof OctActor)		return true;
 	return false;
 };
-RockActor.prototype.collideVs = function(act) {
+ShotActor.prototype.collideVs = function(act) {
 	if(act instanceof CharActor)
 	{
 		var interBox = GAMEGEOM.BoxIntersection(this.absBox, act.absBox);
@@ -162,18 +162,18 @@ RockActor.prototype.collideVs = function(act) {
 
 
 
-RockActor.prototype.updateCurrentAnimation = function() {
+ShotActor.prototype.updateCurrentAnimation = function() {
 //	if(this.animateModule == null)	return;
 	if(this.lastHeading.x == 0 && this.lastHeading.y == 0)	return;
 	
 
 };
-RockActor.prototype.updateMode = function() {
+ShotActor.prototype.updateMode = function() {
 };
 
 
-RockActor.alloc = function() {
-	var vc = new RockActor();
+ShotActor.alloc = function() {
+	var vc = new ShotActor();
 	vc.init();
 	return vc;
 };
