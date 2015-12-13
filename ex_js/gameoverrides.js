@@ -229,15 +229,30 @@ GAMEMODEL.loadGame = function()
 
 GAMEMODEL.fillDropper = function(dropper)
 {
-    dropper.addLoad(0,0,0,400,250,{type:"CIRCLE",data:''});
-    dropper.addLoad(0,0,100,400,500,{type:"CIRCLE",data:''});
-    dropper.addLoad(0,0,100,450,600,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,0,400,750,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,100,400,700,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,100,450,750,{type:"CIRCLE",data:''});
     dropper.addLoad(0,0,100,350,700,{type:"CIRCLE",data:''});
 
-    for(var i=0; i<50; i++) {
-        dropper.addLoad(0,0,200+i*50,100 + Math.random()*600,500+(i+Math.random())*50,{type:"CIRCLE",data:''});
-    }
-/**/
+    dropper.addLoad(0,0,300,300,700,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,300,350,700,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,300,400,700,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,300,450,700,{type:"CIRCLE",data:''});
 
+    for(var i=0; i<50; i++) {
+        var r1=Math.random()*0.75;
+        var x1=Math.ceil(Math.random()*10)*50;
+        var x2=(Math.random()*20)+45;
+        var m=Math.ceil(Math.random()*5)+3;
+        for(var k=0; k<m; k++) {
+            dropper.addLoad(0,0,400+(i+r1)*50, x1+k*x2,850, {type:"CIRCLE",data:''});
+        }
+    }
+
+    for(var i=0; i<50; i++) {
+        dropper.addLoad(0,0,200+i*50,100 + Math.random()*600,800,{type:"CIRCLE",data:''});
+    }
+
+    dropper.sortLoads();
 };
 

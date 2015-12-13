@@ -42,7 +42,7 @@ CamField.prototype.collide = function(act) {
     if(typeof act === "undefined")      return;
     if( !this.alive || !act.alive )             return;
     if(  this.collideType(act) != true  )                           return;
-    if(  GAMEGEOM.BoxIntersects(this.absBox, act.absBox)==false  )   
+    if(  GAMEGEOM.BoxContains(this.absBox, act.absBox)==false  )   
     {
         this.collideVs(act);
     }
@@ -60,11 +60,13 @@ CamField.prototype.collideVs = function( actor ) {
 			actor.alive = false;
 		}
 	}
-    if(actor instanceof CharActor && GAMEGEOM.BoxContains(this.absBox, actor.absBox)==false) {
+    if(actor instanceof CharActor && (GAMEGEOM.BoxContains(this.absBox, actor.absBox)==false)) {
 		var shiftpos = {x:0,y:0};
 		if( actor.absBox.y < this.absBox.y && this.borderBlock.indexOf("N") !== -1)
 		{
-			shiftpos.y = this.absBox.y - actor.absBox.y;
+			var ptA = this.absBox.y;
+			var ptactA = actor.absBox.y;
+			if(ptactA < ptA)				shiftpos.y = ptA - ptactA;	
 		}
 		if( this.borderBlock.indexOf("E") !== -1 )
 		{
@@ -84,11 +86,8 @@ CamField.prototype.collideVs = function( actor ) {
 		}
 
 		if(shiftpos.x != 0 || shiftpos.y != 0)
-		{
-			shiftpos.x = shiftpos.x + actor.position.x;
-			shiftpos.y = shiftpos.y + actor.position.y;
-		
-			actor.updatePosition(shiftpos);
+		{	
+			actor.shiftPosition(shiftpos);
 		}
 	}
 };

@@ -84,7 +84,7 @@ DropperActor.prototype.tryDrop = function()
 			{
 				if (this.loadedItems[i].dropAtY <= this.progress)
 				{
-					this.dropLoaded(this.loadedItems[i]);
+					this.dropLoaded(this.loadedItems[i].dropAtY,this.loadedItems[i]);
 					this.loadedItems.splice(i, 1);
 				}
 				else
@@ -104,7 +104,7 @@ DropperActor.prototype.tryDrop = function()
 	}
 };
 
-DropperActor.prototype.dropLoaded = function(item)
+DropperActor.prototype.dropLoaded = function(time,item)
 {
 	var payload = item.payload;
 	var target = item.target;
@@ -125,7 +125,7 @@ DropperActor.prototype.dropLoaded = function(item)
 	if (actor != null)
 	{
 		actor.updatePosition({x: 0, y: (GAMEMODEL.gameSession.gameWorld.size.h)});
-		actor.shiftPosition({x: position.x, y: -(2 * position.y)});
+		actor.shiftPosition({x: position.x, y: (-position.y-time)});
 
 		if (typeof actor.loadingData === "function")
 		{
@@ -136,6 +136,12 @@ DropperActor.prototype.dropLoaded = function(item)
 	}
 };
 
+DropperActor.prototype.sortLoads = function()
+{
+	this.loadedItems.sort(function(a,b) {
+		return a.dropAtY - b.dropAtY;
+	});
+};
 DropperActor.prototype.tryCleaning = function()
 {
 	var camera = GAMEMODEL.gameCamera;
@@ -146,12 +152,11 @@ DropperActor.prototype.tryCleaning = function()
 	//    console.log(c);
 	for (var i in actors)
 	{
-		if (actors[i].alive && actors[i].position.y > (this.position.y + 2000))
+		if (actors[i].alive && actors[i].position.y > (this.position.y + 800))
 		{
-			if (actors[i] instanceof SwayEnemy)
-			{
-				actors[i].alive = false;
-			}
+			if (actors[i] instanceof EnemyActor)		actors[i].alive = false;
+			if (actors[i] instanceof SwayEnemy)			actors[i].alive = false;
+			if (actors[i] instanceof CircleEnemy)		actors[i].alive = false;
 		}
 	}
 };
