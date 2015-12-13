@@ -60,7 +60,7 @@ CamField.prototype.collideVs = function( actor ) {
 			actor.alive = false;
 		}
 	}
-    if(actor instanceof CharActor && GAMEGEOM.BoxContains(this.absBox, act.absBox)==false) {
+    if(actor instanceof CharActor && GAMEGEOM.BoxContains(this.absBox, actor.absBox)==false) {
 		var shiftpos = {x:0,y:0};
 		if( actor.absBox.y < this.absBox.y && this.borderBlock.indexOf("N") !== -1)
 		{

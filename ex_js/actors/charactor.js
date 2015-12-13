@@ -20,8 +20,8 @@ CharActor.prototype.init = function() {
 	this.drawShift = {x:0,y:0};
 	
 	this.heading = {x:0,y:0};
-	this.unitSpeedX = 0.13;
-	this.unitSpeedY = 0.13;
+	this.unitSpeedX = 0.18;
+	this.unitSpeedY = 0.18;
 	this.ticksDiff = 0;
 
 	this.dirTimeOut = 40;

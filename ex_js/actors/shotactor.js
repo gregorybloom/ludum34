@@ -22,7 +22,7 @@ ShotActor.prototype.init = function() {
 	this.cooldur = 10000;
 	
 	this.radius=4;
-	this.unitSpeed = 0.25;
+	this.unitSpeed = 0.35;
 	this.firer=null;
 	
 	this.actionMode = "MODE_STILL";
