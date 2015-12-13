@@ -58,6 +58,8 @@ Actor.prototype.draw = function() {
 
 	if(this.animateModule != null)	this.animateModule.draw();
 };
+Actor.prototype.clear = function() {
+};
 Actor.prototype.collide = function(act) {
 	if(typeof act === "undefined")		return;
 	if( !this.alive || !act.alive )				return;

@@ -16,8 +16,9 @@ CircleEnemy.prototype.init = function()
 	this.size = {w: (this.radius*2), h: (this.radius*2)};
 	this.position = {x: 0, y: 0};
 	this.cooldown = GAMEMODEL.gameClock.elapsedMS();
-	this.cooldur = 0;
+	this.cooldur = 2000;
 	this.fired = false;
+
 	this.unitSpeed = 0.04;
 	this.unitSpeedH = 0.1;
 
@@ -142,9 +143,9 @@ CircleEnemy.prototype.updateMode = function()
 		this.turnclock = GAMEMODEL.gameClock.elapsedMS();
 		this.makeTurn(this.unitSpeedH, this.turnheading );
 	}
-	//	var timeLeft = this.cooldown + this.cooldur - GAMEMODEL.gameClock.elapsedMS();
-	//	this.shoot();
-	//	if(timeLeft <= 0)		this.decideAction();
+		var timeLeft = this.cooldown + this.cooldur - GAMEMODEL.gameClock.elapsedMS();
+		if(timeLeft <= 0)		this.shoot();
+		if(timeLeft <= 0)		this.cooldown = GAMEMODEL.gameClock.elapsedMS();
 };
 
 CircleEnemy.prototype.collide = function(act) {
@@ -176,15 +177,15 @@ CircleEnemy.prototype.shoot = function()
 {
 	if (this.fired)
 	{
-		return;
+//		return;
 	}
 
 	this.fired = true;
-	var rock = RockActor.alloc();
+	var rock = BulletActor.alloc();
 	rock.updatePosition(this.position);
-	rock.heading.x = this.lastHeading.x;
-	rock.heading.y = this.lastHeading.y;
-	rock.direction = this.direction;
+	rock.heading.x = 0;
+	rock.heading.y = 1;
+	rock.direction = 2;
 	rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
 	rock.firer = this;
 	GAMEMODEL.gameSession.gameWorld.addActor(rock, 'act');
@@ -196,7 +197,7 @@ CircleEnemy.prototype.shoot = function()
 
 		if (Math.random() > 0.6)
 		{
-			this.playSound(4, v, r);
+//			this.playSound(4, v, r);
 		}
 	}
 };

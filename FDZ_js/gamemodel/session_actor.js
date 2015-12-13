@@ -127,9 +127,10 @@ SessionActor.prototype.distributeInput = function(kInput)
 SessionActor.prototype.update = function() {
 	Actor.prototype.update.call(this);
 
-	if(this.paused && this.gameClock.isActive)	    this.gameClock.stop();
-	if(!this.paused && !this.gameClock.isActive)	this.gameClock.start();
-	
+    if(this.gameClock != null) {
+        if(this.paused && this.gameClock.isActive)	    this.gameClock.stop();
+	    if(!this.paused && !this.gameClock.isActive)	this.gameClock.start();
+	}
 
     if(this.gamePlayer instanceof CharActor)
     {

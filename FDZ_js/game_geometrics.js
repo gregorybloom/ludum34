@@ -98,4 +98,29 @@ GAMEGEOM.BoxIntersection = function(B1, B2)
 	var Newbox = {x:x1,y:y1,w:(x2-x1),h:(y2-y1)};
 	return Newbox;
 };
+GAMEGEOM.EllipseCircle = function(E, C) {
 
+	var toE = {x:0,y:0};
+	toE.x = E.x - C.x;
+	toE.y = E.y - C.y;
+
+	var d = Math.sqrt( toE.x*toE.x + toE.y*toE.y );
+	toE.x = toE.x * (C.r/d);
+	toE.y = toE.y * (C.r/d);
+
+	var P = {x:0,y:0};
+	P.x = C.x + toE.x;
+	P.y = C.y + toE.y;
+
+	return GAMEGEOM.EllipsePoint(E, P);
+};
+GAMEGEOM.EllipsePoint = function(E, P) {
+
+	var Xside = (P.x - E.x);
+	Xside = Xside*Xside / ( (E.w/2)*(E.w/2) );
+	var Yside = (P.y - E.y);
+	Yside = Yside*Yside / ( (E.h/2)*(E.h/2) );
+	
+	if( (Xside + Yside) <= 1)		return true;
+	return false;
+};

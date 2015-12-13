@@ -58,7 +58,10 @@ GAMEVIEW.drawAll = function()
 
     var ScreenPt = {x:160,y:585};
     var str = "";
-    if(GAMEMODEL.gameSession != null)   str=Math.floor(GAMEMODEL.gameSession.gameWorld.dropper.progress)+" progress";
+    if(GAMEMODEL.gameSession != null && GAMEMODEL.gameSession.gameWorld != null)
+    {
+        str=Math.floor(GAMEMODEL.gameSession.gameWorld.dropper.progress)+" progress";
+    }
     this.context.lineWidth = "3";
     this.context.strokeStyle = "#FFFFFF";
     this.context.strokeText(str,ScreenPt.x,ScreenPt.y);

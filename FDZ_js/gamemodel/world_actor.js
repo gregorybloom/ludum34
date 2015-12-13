@@ -71,7 +71,7 @@ WorldActor.prototype.updateAll = function() {
 		
 	for(var i in this.gameActors)
 	{
-		this.gameActors[i].update();
+		if(this.gameActors[i] instanceof Actor)  this.gameActors[i].update();
 	}
 	for(var i in this.gameArtbits)
 	{

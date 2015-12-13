@@ -111,13 +111,19 @@ GAMEMODEL.togglePause = function()
 	if(this.gameMode === "GAME_PAUSE")
 	{
 		this.gameClock.start();
-		if(this.gameSession)	this.gameSession.gameClock.start();
+		if(this.gameSession && this.gameSession.gameClock)
+		{
+			this.gameSession.gameClock.start();
+		}
 		this.gameMode = "GAME_RUN";
 	}
 	else if(this.gameMode === "GAME_RUN")
 	{
 		this.gameClock.stop();
-		if(this.gameSession)	this.gameSession.gameClock.stop();
+		if(this.gameSession && this.gameSession.gameClock)
+		{
+			this.gameSession.gameClock.stop();
+		}
 		this.gameMode = "GAME_PAUSE";
 	}
 };

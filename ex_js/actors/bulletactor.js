@@ -2,13 +2,13 @@
 
 
 
-function ShotActor() {
+function BulletActor() {
 }
-ShotActor.prototype = new Actor;
-ShotActor.prototype.identity = function() {
-	return ('ShotActor (' +this._dom.id+ ')');
+BulletActor.prototype = new Actor;
+BulletActor.prototype.identity = function() {
+	return ('BulletActor (' +this._dom.id+ ')');
 };
-ShotActor.prototype.init = function() {
+BulletActor.prototype.init = function() {
 	Actor.prototype.init.call(this);
 
 	this.size = {w:8,h:8};
@@ -25,6 +25,8 @@ ShotActor.prototype.init = function() {
 	this.unitSpeed = 0.3;
 	this.firer=null;
 	
+	this.damage = 1;
+
 	this.actionMode = "MODE_STILL";
 	
 	this.updatePosition();
@@ -38,7 +40,7 @@ ShotActor.prototype.init = function() {
 	this.moveModule.target = this;	
 };
 
-ShotActor.prototype.draw = function() {
+BulletActor.prototype.draw = function() {
 	Actor.prototype.draw.call(this);
 	GAMEVIEW.fillCircle(this.absBox,this.radius,"#000000");
 //	GAMEVIEW.drawEllipses(this.absPosition, this.size, true, 0, "#000000");
@@ -51,7 +53,7 @@ ShotActor.prototype.draw = function() {
 //		GAMEVIEW.drawCircle(this.absPosition,100);		
 	}	/**/
 };
-ShotActor.prototype.update = function() {
+BulletActor.prototype.update = function() {
 	Actor.prototype.update.call(this);
 
 	if(this.direction == 0)			this.heading = {x:0, y:-1};
@@ -74,28 +76,51 @@ ShotActor.prototype.update = function() {
 //	if(this.animateModule != null)	this.animateModule.update();
 };
 
-ShotActor.prototype.collideType = function(act) {
+BulletActor.prototype.collideType = function(act) {
 	if(act == this.firer)		return false;
+	if(act instanceof CharActor)	return true;
+	if(act instanceof OctActor)		return true;
 	return false;
 };
-ShotActor.prototype.collideVs = function(act) {
+BulletActor.prototype.collideVs = function(act) {
+	if(act instanceof CharActor)
+	{
+		var interBox = GAMEGEOM.BoxIntersection(this.absBox, act.absBox);
 
+		var P = {x:0,y:0};
+		P.x = interBox.x + interBox.w/2;
+		P.y = interBox.y + interBox.h/2;
+		var E = {x:this.position.x,y:this.position.y,w:this.size.w,h:this.size.h};
+
+		var I = GAMEGEOM.EllipsePoint(E,P);
+
+		if(I) {
+			this.alive = false;
+			act.health -= this.damage;
+
+			if(GAMEVIEW.BoxIsInCamera(act.absBox)) {
+				var r=0.9+ 0.3*Math.random();
+				var v=0.55+ 0.1*Math.random();
+//				act.playSound(6,v,r);
+			}
+		}
+	}
 };
 
 
 
-ShotActor.prototype.updateCurrentAnimation = function() {
+BulletActor.prototype.updateCurrentAnimation = function() {
 //	if(this.animateModule == null)	return;
 	if(this.lastHeading.x == 0 && this.lastHeading.y == 0)	return;
 	
 
 };
-ShotActor.prototype.updateMode = function() {
+BulletActor.prototype.updateMode = function() {
 };
 
 
-ShotActor.alloc = function() {
-	var vc = new ShotActor();
+BulletActor.alloc = function() {
+	var vc = new BulletActor();
 	vc.init();
 	return vc;
 };

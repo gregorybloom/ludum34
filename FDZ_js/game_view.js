@@ -470,10 +470,10 @@ GAMEVIEW.drawText = function(absPt, text, font, color, width)
 };
 
 
-GAMEVIEW.drawEllipses = function(pos, size, fill, a, color, width) {
+GAMEVIEW.drawEllipses = function(pos, size, ellshift, fill, a, color, width) {
 	var kappa = 0.5522848;
 
-	var t = {t1:{x:0,y:0},t2:{x:0,y:5}, ang:a};
+	var t = {t1:{x:0,y:0},t2:ellshift, ang:a};
 	var pt = {x:0,y:0};
 	var endX = pt.x + size.w/2;
 	var endY = pt.y + size.h/2;

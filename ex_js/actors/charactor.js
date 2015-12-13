@@ -17,6 +17,9 @@ CharActor.prototype.init = function() {
 	this.baseOffset = {x:0.5,y:0.35};
 	this.actionMode = "MODE_STILL";
 
+	this.maxhealth = 1;
+	this.health = this.maxhealth;
+
 	this.drawShift = {x:0,y:0};
 	
 	this.heading = {x:0,y:0};
@@ -24,12 +27,18 @@ CharActor.prototype.init = function() {
 	this.unitSpeedY = 0.21;
 	this.ticksDiff = 0;
 
+	this.focusC = (this.size.w/2)*(this.size.w/2);
+	this.focusC = Math.abs(  (this.size.h/2)*(this.size.h/2)  - this.focusC  );
+	this.focusC = Math.sqrt(this.focusC);
+
 	this.dirTimeOut = 40;
 	this.cooldown = GAMEMODEL.gameClock.elapsedMS();
-	this.coolshot = 200;
+	this.coolshot = 120;
 
 	this.keyTimeList = [];
 	for(var i=0; i<4; i++)	this.keyTimeList[i] = GAMEMODEL.gameClock.elapsedMS();
+
+
 
 	this.updatePosition();	
 };
@@ -37,8 +46,20 @@ CharActor.prototype.draw = function() {
 
 //	Actor.prototype.draw.call(this);
 
-	GAMEVIEW.drawBox(this.absBox,"#0000ff");
-	GAMEVIEW.drawEllipses(this.absPosition, this.size, true, 0, "#333333");
+//	GAMEVIEW.drawBox(this.absBox,"#0000ff");
+	var c = "#333333";
+	if(this.health < 20)	c = "#444444";
+	if(this.health < 18)	c = "#555555";
+	if(this.health < 16)	c = "#666666";
+	if(this.health < 14)	c = "#777777";
+	if(this.health < 12)	c = "#888888";
+	if(this.health < 10)	c = "#999999";
+	if(this.health < 8)		c = "#aaaaaa";
+	if(this.health < 6)		c = "#bbbbbb";
+	if(this.health < 4)		c = "#cccccc";
+	if(this.health < 2)		c = "#dddddd";
+
+	GAMEVIEW.drawEllipses(this.absPosition, this.size, {x:0,y:5}, true, 0, c);
 };
 CharActor.prototype.update = function() {
 	Actor.prototype.update.call(this);
@@ -63,6 +84,7 @@ CharActor.prototype.update = function() {
 		this.shoot();
 	}
 
+	if(this.health < 0)		GAMEMODEL.endGame();
 	
 	
 //	if(this.animateModule != null)	this.animateModule.update();
