@@ -1,7 +1,5 @@
 
 
-
-
 function SwayEnemy() {
 }
 SwayEnemy.prototype = new EnemyActor;

@@ -90,6 +90,7 @@ DropperActor.prototype.dropLoaded = function(item) {
 
 	var actor = null;
 	if(type == "SWAYING")		actor = SwayEnemy.alloc();
+	if(type == "CIRCLE")		actor = CircleEnemy.alloc();
 
 	if(actor != null) {
 		actor.updatePosition({x:0,y:(GAMEMODEL.gameSession.gameWorld.size.h)});

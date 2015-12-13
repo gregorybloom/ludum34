@@ -229,13 +229,13 @@ GAMEMODEL.loadGame = function()
 
 GAMEMODEL.fillDropper = function(dropper)
 {
-    dropper.addLoad(0,0,0,400,250,{type:"SWAYING",data:''});
-    dropper.addLoad(0,0,100,400,500,{type:"SWAYING",data:''});
-    dropper.addLoad(0,0,100,450,600,{type:"SWAYING",data:''});
-    dropper.addLoad(0,0,100,350,700,{type:"SWAYING",data:''});
+    dropper.addLoad(0,0,0,400,250,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,100,400,500,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,100,450,600,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,100,350,700,{type:"CIRCLE",data:''});
 
     for(var i=0; i<50; i++) {
-        dropper.addLoad(0,0,200+i*50,100 + Math.random()*600,500+(i+Math.random())*50,{type:"SWAYING",data:''});
+        dropper.addLoad(0,0,200+i*50,100 + Math.random()*600,500+(i+Math.random())*50,{type:"CIRCLE",data:''});
     }
 /**/
 
