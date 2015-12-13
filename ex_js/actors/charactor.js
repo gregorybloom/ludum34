@@ -17,7 +17,7 @@ CharActor.prototype.init = function() {
 	this.baseOffset = {x:0.5,y:0.35};
 	this.actionMode = "MODE_STILL";
 
-	this.maxhealth = 1;
+	this.maxhealth = 20;
 	this.health = this.maxhealth;
 
 	this.drawShift = {x:0,y:0};
@@ -131,7 +131,7 @@ CharActor.prototype.shoot = function() {
 	rock.shiftPosition({x:rock.heading.x*this.size.w/2,y:rock.heading.y*this.size.h/2});
 	rock.firer=this;
 
-    GAMEMODEL.gameSession.gameWorld.addActor(rock,'act');
+    GAMEMODEL.gameSession.gameWorld.addActor(rock,'bullet');
 
 	if(GAMEVIEW.BoxIsInCamera(this.absBox)) {
 		var r=0.9+ 0.3*Math.random();

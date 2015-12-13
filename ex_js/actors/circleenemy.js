@@ -40,7 +40,7 @@ CircleEnemy.prototype.loadingData = function(data)
 CircleEnemy.prototype.draw = function()
 {
 	//	EnemyActor.prototype.draw.call(this);
-	GAMEVIEW.drawBox(this.absBox, "#660000");
+//	GAMEVIEW.drawBox(this.absBox, "#660000");
 	GAMEVIEW.drawCircle(this.position, this.radius, "#FF0000", 1);
 };
 
@@ -188,7 +188,7 @@ CircleEnemy.prototype.shoot = function()
 	rock.direction = 2;
 	rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
 	rock.firer = this;
-	GAMEMODEL.gameSession.gameWorld.addActor(rock, 'act');
+	GAMEMODEL.gameSession.gameWorld.addActor(rock, 'bullet');
 
 	if (GAMEVIEW.BoxIsInCamera(this.absBox))
 	{

@@ -17,11 +17,20 @@ GameWorld.prototype.init = function() {
     this.dropper = null;
     this.camField = null;
 
+    this.gameBullets = [];
+
     this.borderBlock = "NESW";
 };
 
 GameWorld.prototype.clear = function() {
     WorldActor.prototype.clear.call(this);
+        
+    for(var i in this.gameBullets)
+    {
+        this.gameBullets[i].clear();
+        this.gameBullets.splice(i,1);
+    }
+    this.gameBullets = {};    
 };
 GameWorld.prototype.load = function() {
 
@@ -34,12 +43,24 @@ GameWorld.prototype.load = function() {
 
 
 };
+GameWorld.prototype.addActor = function(act,type) {
+    var c=0;
+    if(type === "bullet") {
+        this.gameBullets.push(act);
+    }
+    else        WorldActor.prototype.addActor.call(this,act,type);
+};
 GameWorld.prototype.update = function() {
     WorldActor.prototype.update.call(this);
 
     GAMEMODEL.activeObjs = 0;
     for(var i in this.gameActors) {
         if(this.gameActors[i].alive) {
+            GAMEMODEL.activeObjs+=1;
+        }
+    }
+    for(var i in this.gameBullets) {
+        if(this.gameBullets[i].alive) {
             GAMEMODEL.activeObjs+=1;
         }
     }
@@ -71,10 +92,14 @@ GameWorld.prototype.draw = function() {
 GameWorld.prototype.updateAll = function() {
     this.cleanAll();
     WorldActor.prototype.updateAll.call(this);
+
+    for(var i in this.gameBullets)
+    {
+        if(this.gameBullets[i] instanceof Actor)  this.gameBullets[i].update();
+    }
 };
 
 GameWorld.prototype.drawAll = function() {
-    WorldActor.prototype.drawAll.call(this);
 
 //    GAMEVIEW.context.fillStyle = "#CCCCCC";
 //    GAMEVIEW.context.fillRect( 0, 0, GAMEVIEW.screen.w, GAMEVIEW.screen.h );
@@ -98,21 +123,22 @@ GameWorld.prototype.drawAll = function() {
         }
     }   /**/
 
-    for(var j=-1; j<4; j++) {
-        for(var i in this.gameActors) {
-            if(j==-1 && typeof this.gameActors[i].lane === "undefined") this.gameActors[i].draw();
-            if(j>=0 && this.gameActors[i].lane == j)   this.gameActors[i].draw();
-//            if(j>=0)   console.log(j+' ' +this.gameActors[i].lane + ' ' + (this.gameActors[i].identity()));
-        }
+
+    for(var i in this.gameBullets)
+    {
+            this.gameBullets[i].draw();
+    }
+    for(var i in this.gameActors)
+    {
+            this.gameActors[i].draw();
     }
     for(var i in this.gameArtbits)
     {
             this.gameArtbits[i].draw();
     }
 
-//    if(this.gamePlayer != null)     this.gamePlayer.draw();
-
-//    WorldActor.prototype.drawAll.call(this);
+    if(this.gamePlayer != null)     this.gamePlayer.draw();
+    this.draw();
 };
 
 
@@ -125,6 +151,14 @@ GameWorld.prototype.readInput = function(kInput) {
 
 GameWorld.prototype.cleanAll = function() {
 
+        for(var i in this.gameBullets)
+        {
+                if(this.gameBullets[i] instanceof Actor && this.gameBullets[i].alive == false)
+                {
+//                        this.gameActors[i].clear();
+                        this.gameBullets.splice(i,1);
+                }
+        }   
         for(var i in this.gameActors)
         {
                 if(this.gameActors[i] instanceof Actor && this.gameActors[i].alive == false)
@@ -143,6 +177,29 @@ GameWorld.prototype.cleanAll = function() {
         }	
 
 };
+GameWorld.prototype.collideWorld = function() {
+};
+GameWorld.prototype.collideAll = function() {
+    WorldActor.prototype.collideAll.call(this);
+
+    for(var i in this.gameBullets)
+    {
+        if(this.gameBullets[i] instanceof Actor && this.gameBullets[i].alive)
+        {
+            this.gamePlayer.collide( this.gameBullets[i] );
+            this.gameBullets[i].collide( this.gamePlayer );
+        }
+    
+        for(var j in this.gameActors)
+        {
+            if(this.gameActors[j] instanceof Actor && this.gameBullets[i] != this.gameActors[j])
+            {
+                this.gameActors[j].collide( this.gameBullets[i] );
+                this.gameBullets[i].collide( this.gameActors[j] );
+            }
+        }  
+    }
+};
 GameWorld.prototype.collide = function(act) {
     if(typeof act === "undefined")      return;
     if( !this.alive || !act.alive )             return;
@@ -153,9 +210,7 @@ GameWorld.prototype.collide = function(act) {
     }
 };
 GameWorld.prototype.collideType = function(act) {
-    if(act instanceof OctActor)     return true;
-    if(act instanceof CharActor)     return true;
-    if(act instanceof RockActor)     return true;
+//    if(act instanceof CharActor)     return true;
     return false;
 };
 
