@@ -1,0 +1,267 @@
+  <!DOCTYPE html> 
+ 
+<html>
+<head>
+<script>
+/*
+https://developers.google.com/web/tools/chrome-devtools/profile/memory-problems/memory-diagnosis
+http://stackoverflow.com/questions/19621074/finding-javascript-memory-leaks-with-chrome
+https://code.google.com/p/leak-finder-for-javascript/
+http://stackoverflow.com/questions/15970525/how-to-find-js-memory-leaks
+http://addyosmani.com/blog/taming-the-unicorn-easing-javascript-memory-profiling-in-devtools/
+http://gent.ilcore.com/2011/08/finding-memory-leaks.html
+http://javascript.crockford.com/memory/leak.html
+https://docs.google.com/presentation/d/1wUVmf78gG-ra5aOxvTfYdiLkdGaR9OhXRnOlIcEmu2s/pub?start=false&loop=false&delayms=3000&slide=id.g122c657d_0_119
+http://www.smashingmagazine.com/2012/11/writing-fast-memory-efficient-javascript/
+/**/
+window.onload = function() {
+
+	setInterval( function() { worldUpdate(); }, 40);
+}
+
+function worldUpdate() {
+	GAMEMODEL.updateAll();
+	GAMEMODEL.collideAll();
+
+	GAMEVIEW.updateAll();
+	GAMEVIEW.drawAll();	
+
+
+//        console.log(GAMEMODEL.gameMode);
+}
+
+</script>
+
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
+
+	<script src="html5-buffer-loader.js" type="text/javascript"></script>
+
+
+	<script src="FDZ_js/game_geometrics.js" type="text/javascript"></script>
+	<script src="FDZ_js/gamemodel/gameclock.js" type="text/javascript"></script>
+
+	<script src="FDZ_js/game_music.js" type="text/javascript"></script>
+	<script src="FDZ_js/game_sounds.js" type="text/javascript"></script>
+
+
+	<script src="FDZ_js/graphics/imgframe.js" type="text/javascript"></script>
+	<script src="FDZ_js/graphics/animframe.js" type="text/javascript"></script>
+
+	<script src="FDZ_js/module/animator.js" type="text/javascript"></script>
+
+
+	<script src="FDZ_js/movescripts/movecomponent.js" type="text/javascript"></script>
+	<script src="FDZ_js/movepathing/basicpath.js" type="text/javascript"></script>
+	<script src="FDZ_js/movepathing/basicprogress.js" type="text/javascript"></script>
+	<script src="FDZ_js/movepathing/paths.js" type="text/javascript"></script>
+	<script src="FDZ_js/movepathing/progress.js" type="text/javascript"></script>
+	<script src="FDZ_js/movescripts/durations.js" type="text/javascript"></script>
+	<script src="FDZ_js/movescripts/headings.js" type="text/javascript"></script>
+	<script src="FDZ_js/movescripts/increments.js" type="text/javascript"></script>
+
+	<script src="FDZ_js/movescripts/moveactor.js" type="text/javascript"></script>
+	<script src="FDZ_js/module/motionator.js" type="text/javascript"></script>
+
+
+	<script src="FDZ_js/game_view.js" type="text/javascript"></script>
+	<script src="FDZ_js/game_animations.js" type="text/javascript"></script>
+
+
+	<script src="FDZ_js/actors/actor.js" type="text/javascript"></script>
+
+	<script src="FDZ_js/gamedisplay/gamecamera.js" type="text/javascript"></script>
+	<script src="FDZ_js/gamedisplay/view_screen.js" type="text/javascript"></script>
+	<script src="FDZ_js/gamedisplay/screen_manager.js" type="text/javascript"></script>
+
+	<script src="ex_js/actors/charactor.js" type="text/javascript"></script>
+	<script src="ex_js/actors/octactor.js" type="text/javascript"></script>
+	<script src="ex_js/actors/rockactor.js" type="text/javascript"></script>
+	<script src="ex_js/actors/tileactor.js" type="text/javascript"></script>
+	<script src="ex_js/actors/textactor.js" type="text/javascript"></script>
+	<script src="ex_js/actors/dropper.js" type="text/javascript"></script>
+	<script src="ex_js/actors/enemyactor.js" type="text/javascript"></script>
+	<script src="ex_js/actors/swayingenemy.js" type="text/javascript"></script>
+
+
+	<script src="FDZ_js/game_control.js" type="text/javascript"></script>
+
+	<script src="FDZ_js/gamemodel/world_actor.js" type="text/javascript"></script>
+	<script src="FDZ_js/gamemodel/session_actor.js" type="text/javascript"></script>
+
+	<script src="FDZ_js/gamemodel/areaactor.js" type="text/javascript"></script>
+
+	<script src="FDZ_js/game_model.js" type="text/javascript"></script>
+
+
+	<script src="ex_js/gamemodel/gameworld.js" type="text/javascript"></script>
+	<script src="ex_js/gamemodel/gamearea.js" type="text/javascript"></script>
+	<script src="ex_js/gamemodel/camfield.js" type="text/javascript"></script>
+
+	<script src="ex_js/loadoverrides.js" type="text/javascript"></script>
+	<script src="ex_js/gameoverrides.js" type="text/javascript"></script>
+</head>
+<body>
+
+
+<canvas id="render" width="800" height="600"></canvas>
+
+
+<script>
+	var canvas = document.getElementById("render");
+	ctxt   = canvas.getContext("2d");
+
+GAMEGEOM.init();
+GAMECONTROL.init();
+GAMEVIEW.init();
+GAMEVIEW.set({w:800,h:600}, ctxt);
+
+GAMEVIEW.drawAll();
+
+GAMEANIMATIONS.init();
+
+GAMEMUSIC.init();
+GAMESOUNDS.init();
+GAMEMODEL.init();
+
+
+	$(document).keyup(GAMECONTROL.onKeyUp);
+	$(document).keydown(GAMECONTROL.onKeyDown);	
+
+
+GAMEMODEL.startGame();
+</script>
+<br>
+<b>Characters don't have a 'flipped sprite' version, so they moonwalk right now. Will be fixed</b>
+
+
+<br>
+<input type="button" onclick="GAMEMUSIC.launchPiWebWorker()" value="Calculate Pi" />
+<br>
+<br>
+<div id="PiValue">PI value appears here</div>
+
+
+
+<p>
+	<b>Left to do:</b>
+</p>
+
+<ol>
+
+<li>
+	GameModel: <strike>FPS Reading and display (for testing!).</strike> Other basic readout info
+</li>
+
+<li>
+	Actors: Verify proper death/cleaning (objects disappear from memory when dead)
+</li>
+<li>
+	Actors: Graphic Grid objects (proper tile grid objects). Collision Grids too.
+</li>
+
+<li>
+	GameAreas: Active/Passive/Display object support (to determine collision needs)
+</li>
+<li>
+	GameAreas: Collision Grids (static and subsectors) for high-load collision activity
+</li>
+<li>
+	GameModel: Create tiered GameClocks and GameCameras and access. Pause modes
+</li>
+<li>
+	GameModel: Create <b>Menu Manager</b> and components. Display modes
+</li>
+<li>
+	GameView: OpenGL drawing mode
+</li>
+<li>
+	Create Scripts: create action scripts, script frames, and script elements
+</li>
+<li>
+	Actors: Create <b>Action Scripting Module</b>. and Module objects (Link, swing that sword!)
+</li>
+<li>
+	GameAnimations: Create flipped sprites for left/right, load into image/animation frames/sequences
+</li>
+<li>
+	GameView: Draw-Order, Draw-Layer controls
+</li>
+<li>
+	Create <b>GameSounds</b>: For sound effect management!
+</li>
+<li>
+	GameView: Filter/transform support (allowing 'damage/poison/sfx' flashes)
+</li>
+<li>
+	GameModel: detect off-focus, autopause game
+</li>
+<li>
+	GameMusic: Create better music management: looping, volume control, fading (and local loading?)
+</li>
+<li>
+	MenuManager: opening Loading display, flash (pause?) loading screens for dynamic asset loading
+</li>
+<li>
+	GameMusic: fix 'loading lag' bug?
+</li>
+
+<li>
+	GameArea: Inter-area collision support, automoving between game area lists?
+</li>
+<li>
+	Actors: Nonduplication collision support (cycle collision log, collision time log?)
+</li>
+<li>
+	GameSounds: Positional sound controls
+</li>
+<li>
+	GameControl: Create menu for key rebinding, and GameControl 'translation' schema?
+</li>
+<li>
+	GameView: Variable screensize support. Graphics/sounds options
+</li>
+
+<li>
+	Actors: Create HUD and HUD managers
+</li>
+</ol>
+	<b>The really "big" things:</b>
+<ul>
+<li>
+	GameModel: Read/parse data file access (dynamic loading of data)
+</li>
+<li>
+	GameModel: Create local file saving/loading (save and load game/options)
+</li>
+<li>
+	GameModel: Resource management (manage necessary graphics/sounds/music on a GameArea basis)
+</li>
+<li>
+	GameArea: Area manager (loading/storing areas, state management, content manager?)
+</li>
+<li>
+	GameDebug: Game Debugger mode, HUD, and options
+</li>
+</ul>
+
+<p>
+	<b>Wish List:</b>
+</p>
+<ul>
+<li>
+	GameControls: Controller support?
+</li>
+<li>
+	CollisionGrids: Swept collision handling?
+</li>
+<li>
+	Full saved-game options and management
+</li>
+<li>
+	2-4 Multiplayer support
+</li>
+
+</ul>
+
+</body>
+</html>
