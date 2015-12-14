@@ -52,10 +52,11 @@ CamField.prototype.collideType = function(act) {
 	if(act instanceof CharActor)	return true;
 	if(act instanceof ShotActor)	return true;
 	if(act instanceof BulletActor)	return true;
+	if(act instanceof PlayerShotActor)	return true;
 	return false;
 };
 CamField.prototype.collideVs = function( actor ) {
-    if(actor instanceof ShotActor) {
+    if(actor instanceof PlayerShotActor) {
 		if( actor.absBox.y < this.absBox.y && this.borderBlock.indexOf("N") !== -1)
 		{
 			actor.alive = false;
@@ -66,6 +67,7 @@ CamField.prototype.collideVs = function( actor ) {
 		{
 			var ptD = this.absBox.y + this.absBox.h;
 			var ptactD = actor.absBox.y + actor.absBox.h;
+			if(actor.deadLength)		ptactD -= actor.deadLength;
 			if(ptactD > ptD)			actor.alive = false;
 		}
 	}

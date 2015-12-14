@@ -37,6 +37,7 @@ Actor.prototype.init = function() {
 	this.thisUpdateTicks = GAMEMODEL.gameClock.elapsedMS();
 	this.ticksDiff = 0;
 	
+	this.moveModule = null;
 	this.animateModule = null;
 	this.ranID = Math.floor(Math.random()*10000);
 };
@@ -59,6 +60,10 @@ Actor.prototype.draw = function() {
 	if(this.animateModule != null)	this.animateModule.draw();
 };
 Actor.prototype.clear = function() {
+	if(this.animateModule)			this.animateModule.clear();
+	if(this.moveModule)				this.moveModule.clear();
+	this.animateModule = null;
+	this.moveModule = null;
 };
 Actor.prototype.collide = function(act) {
 	if(typeof act === "undefined")		return;

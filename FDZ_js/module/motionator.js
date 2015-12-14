@@ -15,6 +15,15 @@ MovingActorModule.prototype.init = function() {
 	this.target = null;
 	this.filter = null;
 };
+MovingActorModule.prototype.clear = function() {
+	for(var i in this.moveScriptSet)
+	{
+		if(this.moveScriptSet[i])		this.moveScriptSet[i].clear();
+		this.moveScriptSet[i] = null;
+	}
+	this.moveScriptSet = null;
+};
+
 MovingActorModule.prototype.eraseMovingScripts = function() {
 	this.moveScriptSet = {};
 };

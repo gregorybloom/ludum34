@@ -12,36 +12,74 @@ CircleEnemy.prototype.identity = function()
 CircleEnemy.prototype.init = function()
 {
 	EnemyActor.prototype.init.call(this);
+
+	this.enemyClass = null;
+	this.enemyType = null;
+
+	this.heading.y = 1;
+
 	this.radius = 20;
 	this.size = {w: (this.radius*2), h: (this.radius*2)};
 	this.position = {x: 0, y: 0};
-	this.cooldown = GAMEMODEL.gameClock.elapsedMS();
-	this.cooldur = 2000;
-	this.fired = false;
+
+	this.coolShot = 2000;
+	this.deadLength = 50;
 
 	this.unitSpeed = 0.04;
 	this.unitSpeedH = 0.1;
 
-	this.turnclock = GAMEMODEL.gameClock.elapsedMS();
-	this.turntime = 1500;
-	this.turnheading = {x:0,y:0};
+	this.deathClock = 250;
 
 	this.actionMode = "MODE_STILL";
 	this.updatePosition();
 	this.moveModule = MovingActorModule.alloc();
 	this.moveModule.target = this;
-	this.setPath(1);
+
+	this.turntime = 1500;
 };
 
 CircleEnemy.prototype.loadingData = function(data)
 {
+	EnemyActor.prototype.loadingData.call(this,data);	
+
+	if(data.loadout == 0 || !data.loadout) {
+		if(this.enemyClass==null)	this.enemyClass = "LEGGIONAIRRE";
+		if(this.enemyType==null)	this.enemyType=0;
+
+		this.stepNum=0;
+		this.beginStep(this.stepNum,'');
+	}
+	if(data.loadout == 1) {
+		if(this.enemyClass==null)	this.enemyClass = "WHEELMAN";
+		if(this.enemyType==null)	this.enemyType=0;
+		this.stepNum=0;
+	}
+
+	if(this.enemyType==1)		this.target = GAMEMODEL.gameSession.gamePlayer;
 };
 
 CircleEnemy.prototype.draw = function()
 {
 	//	EnemyActor.prototype.draw.call(this);
 //	GAMEVIEW.drawBox(this.absBox, "#660000");
-	GAMEVIEW.drawCircle(this.position, this.radius, "#FF0000", 1);
+	if(this.enemyClass == "LEGGIONAIRRE" && this.enemyType < 10) {
+		if(!this.deathBegin) {
+			var CF = GAMEMODEL.gameSession.gameWorld.camField;
+//			if(  GAMEGEOM.BoxIntersects(this.absBox, CF.absBox)==false  )
+//				GAMEVIEW.fillCircle(this.absPosition,this.radius,"#009900");
+//			else
+				GAMEVIEW.fillCircle(this.absPosition,this.radius,"#990000");
+		} else {
+			GAMEVIEW.drawCircle(this.absPosition,this.deathRadius,"#666666",1);
+		}	
+	}
+	else if(this.enemyClass == "WHEELMAN" && this.enemyType < 10) {
+		if(!this.deathBegin) {
+			GAMEVIEW.drawCircle(this.absPosition, this.radius, "#FF6600", 6);		
+		} else {
+			GAMEVIEW.drawCircle(this.absPosition, this.deathRadius, "#666666", 1);		
+		}	
+	}
 };
 
 CircleEnemy.prototype.update = function()
@@ -59,137 +97,84 @@ CircleEnemy.prototype.update = function()
 		this.animateModule.update();
 	}
 };
-
-CircleEnemy.prototype.collideType = function(act)
-{
-	if (act instanceof CharActor)
-	{
-		return true;
-	}
-
-	return false;
-};
-
-CircleEnemy.prototype.collideVs = function(act)
-{
-	if (act instanceof CharActor)
-	{
-		var interBox = GAMEGEOM.BoxIntersection(this.absBox, act.absBox);
-		var push = {x: interBox.w, y: interBox.h};
-	}
-};
-
-CircleEnemy.prototype.setPath = function(type)
-{
-	this.actionMode = "MODE_MOVING";
-	var inc = IncrementBySpeed.alloc();
-	inc.spdPerTick = this.unitSpeed;
-	var head = HeadingByVector.alloc();
-	head.setHeadingByVector({x: 0, y: 1}, 500000 * this.unitSpeed);
-	var durt = DurationByTime.alloc();
-	durt.duration = 500000;
-	var lprog = LinearProgress.alloc();
-	var lpath = LinearPath.alloc();
-	var move = MoveActor.alloc();
-	move.movingActor = this;
-	move.increment = inc;
-	move.heading = head;
-	move.duration = durt;
-	move.progress = lprog;
-	move.path = lpath;
-	this.moveModule.moveScriptSet[0] = move;
-
-	this.makeTurn(this.unitSpeedH, {x:1,y:0} );
-};
-
-CircleEnemy.prototype.makeTurn = function(speed,heading) {
-	
-		if(this.moveModule.moveScriptSet[1] instanceof MoveActor)
-		{
-			delete this.moveModule.moveScriptSet[1];
-		}
-
-		this.turnheading = heading;
-
-		var inc2 = IncrementBySpeed.alloc();	inc2.spdPerTick = speed;
-		var head2 = HeadingByVector.alloc();	head2.setHeadingByVector(heading, 500000*speed);
-		var durt2 = DurationByTime.alloc();	durt2.duration = this.turntime;
-		var lprog2 = LinearProgress.alloc();
-		var lpath2 = LinearPath.alloc();
-
-		var move2 = MoveActor.alloc();
-		move2.movingActor = this;
-		move2.increment = inc2;
-		move2.heading = head2;
-		move2.duration = durt2;
-		move2.progress = lprog2;
-		move2.path = lpath2;
-
-		this.moveModule.moveScriptSet[1] = move2;
-}
-
-CircleEnemy.prototype.updateCurrentAnimation = function()
-{
-};
-
-CircleEnemy.prototype.updateMode = function()
-{
+CircleEnemy.prototype.updateDeath = function() {
 	var curtime = GAMEMODEL.gameClock.elapsedMS();
-	if((this.turnclock+this.turntime) <= curtime) 
-	{
-		if(this.turnheading.x < 0)	this.turnheading.x = 1;
-		else 						this.turnheading.x = -1;
+	var deathDiff = (curtime - this.deathStart)/this.deathClock;
 
-		this.turnclock = GAMEMODEL.gameClock.elapsedMS();
-		this.makeTurn(this.unitSpeedH, this.turnheading );
+	this.deathRadius = this.radius*0.9 + 8*(deathDiff);
+};
+
+CircleEnemy.prototype.midStep = function(timeplace,stepnum,step) {
+};
+CircleEnemy.prototype.beginStep = function(stepnum,stepdata) {
+	if(this.enemyClass == "LEGGIONAIRRE" && this.enemyType < 10) {
+			if(this.moveModule.moveScriptSet[0] instanceof MoveActor)
+			{
+				delete this.moveModule.moveScriptSet[0];
+			}
+
+			var speed = this.unitSpeedH;
+
+			var inc2 = IncrementBySpeed.alloc();	inc2.spdPerTick = speed;
+			var head2 = HeadingByVector.alloc();	
+			if(stepnum%2==0)	head2.setHeadingByVector({x:1,y:0}, 500000*speed);
+			if(stepnum%2==1)	head2.setHeadingByVector({x:-1,y:0}, 500000*speed);
+			var durt2 = DurationByTime.alloc();	durt2.duration = this.turntime;
+			var lprog2 = LinearProgress.alloc();
+			var lpath2 = LinearPath.alloc();
+
+			var move2 = MoveActor.alloc();
+			move2.movingActor = this;
+			move2.increment = inc2;
+			move2.heading = head2;
+			move2.duration = durt2;
+			move2.progress = lprog2;
+			move2.path = lpath2;
+
+			this.moveModule.moveScriptSet[0] = move2;
+
+			this.loadStep(stepnum+1, this.turntime, {});
 	}
-		var timeLeft = this.cooldown + this.cooldur - GAMEMODEL.gameClock.elapsedMS();
-		if(timeLeft <= 0)		this.shoot();
-		if(timeLeft <= 0)		this.cooldown = GAMEMODEL.gameClock.elapsedMS();
-};
-
-CircleEnemy.prototype.collide = function(act) {
-	Actor.prototype.collide.call(this,act);
-};
-CircleEnemy.prototype.collideType = function(act) {
-	if(act instanceof ShotActor)		return true;
-	return false;
-};
-CircleEnemy.prototype.collideVs = function(act) {
-	if(act instanceof ShotActor)
-	{
-		var d1 = (act.position.x - this.position.x);
-		var d2 = (act.position.y - this.position.y);
-		var d = d1*d1 + d2*d2;
-
-		var r = (act.radius+this.radius);
-		r=r*r;
-
-		if(d <= r) {
-			act.alive = false;
-			this.alive = false;
-		}
+	if(this.enemyClass == "WHEELMAN" && this.enemyType < 10) {
 	}
 };
+CircleEnemy.prototype.checkShoot = function() {
+	if(this.enemyClass == "LEGGIONAIRRE" && this.enemyType < 10) {
+		var CF = GAMEMODEL.gameSession.gameWorld.camField;
+		if(  GAMEGEOM.BoxIntersects(this.absBox, CF.absBox)==false  )	return;	
 
-
-CircleEnemy.prototype.shoot = function()
-{
-	if (this.fired)
-	{
-//		return;
+		var timeLeft = this.shotCooldown + this.coolShot - GAMEMODEL.gameClock.elapsedMS();
+		if(timeLeft <= 0)		this.beginShoot();
+		if(timeLeft <= 0)		this.shotCooldown = GAMEMODEL.gameClock.elapsedMS();
 	}
+	else if(this.enemyClass == "WHEELMAN" && this.enemyType < 10) {
+		var timeLeft = this.shotCooldown + this.coolShot - GAMEMODEL.gameClock.elapsedMS();
+		if(timeLeft <= 0)		this.beginShoot();
+		if(timeLeft <= 0)		this.shotCooldown = GAMEMODEL.gameClock.elapsedMS();
+	}
+};
+CircleEnemy.prototype.beginShoot = function() {
+	if(this.enemyClass == "LEGGIONAIRRE" && this.enemyType < 10) {
+		var rock = BulletActor.alloc();
+		rock.updatePosition(this.position);
 
-	this.fired = true;
-	var rock = BulletActor.alloc();
-	rock.updatePosition(this.position);
-	rock.heading.x = 0;
-	rock.heading.y = 1;
-	rock.direction = 2;
-	rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
-	rock.firer = this;
-	GAMEMODEL.gameSession.gameWorld.addActor(rock, 'bullet');
+		rock.heading.x = 0;
+		rock.heading.y = 1;
+		if(this.target && this.enemyType == 1)	rock.heading=this.getHeadingAt(this.target.absPosition);
 
+		rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
+		rock.firer = this;
+		GAMEMODEL.gameSession.gameWorld.addActor(rock, 'bullet');
+	}
+	else if(this.enemyClass == "WHEELMAN" && this.enemyType < 10) {
+		var rock = BulletActor.alloc();
+		rock.updatePosition(this.position);
+		rock.heading.x = 0;
+		rock.heading.y = 1;
+		rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
+		rock.firer = this;
+		GAMEMODEL.gameSession.gameWorld.addActor(rock, 'bullet');
+	}
 	if (GAMEVIEW.BoxIsInCamera(this.absBox))
 	{
 		var r = 0.9 + 0.3 * Math.random();
@@ -201,6 +186,43 @@ CircleEnemy.prototype.shoot = function()
 		}
 	}
 };
+
+
+CircleEnemy.prototype.updateCurrentAnimation = function()
+{
+};
+
+CircleEnemy.prototype.updateMode = function()
+{
+	var curtime = GAMEMODEL.gameClock.elapsedMS();
+};
+
+CircleEnemy.prototype.collide = function(act) {
+	EnemyActor.prototype.collide.call(this,act);
+};
+CircleEnemy.prototype.collideType = function(act) {
+	if(act instanceof PlayerShotActor)		return true;
+	return false;
+};
+CircleEnemy.prototype.collideVs = function(act) {
+	if(act instanceof PlayerShotActor)
+	{
+		var d1 = (act.position.x - this.position.x);
+		var d2 = (act.position.y - this.position.y);
+		var d = d1*d1 + d2*d2;
+
+		var r = (act.radius+this.radius);
+		r=r*r;
+
+		if(d <= r) {
+			this.beginDeath();
+			act.beginDeath();
+//			act.alive = false;
+//			this.alive = false;
+		}
+	}
+};
+
 
 CircleEnemy.alloc = function()
 {

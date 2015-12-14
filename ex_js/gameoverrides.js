@@ -5,7 +5,7 @@ GAMEVIEW.drawAll = function()
     
     if(GAMEMODEL.gameMode !== "GAME_INIT")      GAMEMODEL.drawAll();
 
-    GAMEVIEW.drawCircle({x:200,y:49500},15,"#9900ff",2);
+//    GAMEVIEW.drawCircle({x:200,y:49500},15,"#9900ff",2);
     
     var fps = 1000 / this.avgTick;
     fps = Math.floor( fps );
@@ -196,33 +196,6 @@ GAMEMODEL.loadGame = function()
 
     var actlist = this.gameSession.gameWorld.gameActors;
 
-    var O = null;
-/*    O = OctActor.alloc();
-    O.updatePosition({x:400,y:49700});
-    this.gameSession.gameWorld.addActor(O,'act');
-    O.decideOnMove(0);
-
-    O = OctActor.alloc();
-    O.updatePosition({x:300,y:49600});
-    this.gameSession.gameWorld.addActor(O,'act');
-    O.decideOnMove(2);
-
-    O = OctActor.alloc();
-    O.updatePosition({x:500,y:49500});
-    this.gameSession.gameWorld.addActor(O,'act');
-    O.decideOnMove(3);
-
-    for(var i=0; i<20; i++)
-    {
-        O = OctActor.alloc();
-        
-            var randX = Math.random()*(this.gameSession.gameWorld.size.w-200) +100;
-            var randY = Math.random()*(this.gameSession.gameWorld.size.h-200) +100;
-
-        O.updatePosition({x:randX,y:randY});
-        this.gameSession.gameWorld.addActor(O,'act');
-    }   /**/
-
     console.log('loaded game');
 
 //    GAMEMUSIC.playAudio();
@@ -232,15 +205,21 @@ GAMEMODEL.loadGame = function()
 
 GAMEMODEL.fillDropper = function(dropper)
 {
-    dropper.addLoad(0,0,0,400,750,{type:"CIRCLE",data:''});
-    dropper.addLoad(0,0,100,400,700,{type:"CIRCLE",data:''});
-    dropper.addLoad(0,0,100,450,750,{type:"CIRCLE",data:''});
-    dropper.addLoad(0,0,100,350,700,{type:"CIRCLE",data:''});
+    dropper.addLoad(0,0,0,400,750,{type:"CIRCLE",data:{loadout:0}});
+    dropper.addLoad(0,0,100,400,750,{type:"CIRCLE",data:{classtype:1}});
+    dropper.addLoad(0,0,100,450,750,{type:"CIRCLE",data:{classtype:0}});
+    dropper.addLoad(0,0,100,350,750,{type:"CIRCLE",data:{classtype:0}});
 
     dropper.addLoad(0,0,300,300,700,{type:"CIRCLE",data:''});
     dropper.addLoad(0,0,300,350,700,{type:"CIRCLE",data:''});
     dropper.addLoad(0,0,300,400,700,{type:"CIRCLE",data:''});
     dropper.addLoad(0,0,300,450,700,{type:"CIRCLE",data:''});
+
+    dropper.addLoad(0,0,100,400,800,{type:"WHEEL",data:{loadout:0,wheelcount:3}});
+    dropper.addLoad(0,0,400,450,800,{type:"WHEEL",data:{loadout:1,wheelcount:4}});
+    dropper.addLoad(0,0,700,450,800,{type:"WHEEL",data:{loadout:2,wheelcount:6}});
+    dropper.addLoad(0,0,1100,450,800,{type:"WHEEL",data:{loadout:3}});
+    dropper.addLoad(0,0,1500,450,800,{type:"WHEEL",data:{loadout:4}});
 
     for(var i=0; i<50; i++) {
         var r1=Math.random()*0.75;
@@ -253,7 +232,7 @@ GAMEMODEL.fillDropper = function(dropper)
     }
 
     for(var i=0; i<50; i++) {
-        dropper.addLoad(0,0,200+i*50,100 + Math.random()*600,800,{type:"CIRCLE",data:''});
+//        dropper.addLoad(0,0,200+i*100 ,Math.random()*600,800, {type:"CIRCLE",data:''});
     }
 
     dropper.sortLoads();

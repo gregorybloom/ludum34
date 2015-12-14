@@ -28,7 +28,7 @@ GAMEGEOM.BoxContainsPt = function(B1, v)
 	ptD.y = B1.y + B1.h;
 	
 	if(v.x < ptA.x || v.x > ptD.x)	return false;
-	if(c.y < ptA.y || v.y > ptD.y)	return false;
+	if(v.y < ptA.y || v.y > ptD.y)	return false;
 	return true;
 };
 GAMEGEOM.BoxContains = function(B1, B2)

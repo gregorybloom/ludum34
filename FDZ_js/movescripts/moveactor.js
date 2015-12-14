@@ -153,11 +153,11 @@ MoveActor.prototype.kill = function() {
 	this.clear();
 };
 MoveActor.prototype.clear = function() {
-	if(this.increment != null)	delete this.increment.parentMoveActor;
+/*	if(this.increment != null)	delete this.increment.parentMoveActor;
 	if(this.heading != null)	delete this.heading.parentMoveActor;
 	if(this.duration != null)	delete this.duration.parentMoveActor;
 	if(this.progress != null)	delete this.progress.parentMoveActor;
-	if(this.path != null)		delete this.path.parentMoveActor;
+	if(this.path != null)		delete this.path.parentMoveActor;		/**/
 
 	this.increment = null;
 	this.heading = null;

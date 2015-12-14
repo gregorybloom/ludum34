@@ -388,7 +388,7 @@ GAMEVIEW.drawShape = function(pos, pts, transf, color, mode, width)
 	absBox.x = pos.x + transf.t1.x - absBox.w/2;	
 	absBox.y = pos.y + transf.t1.y - absBox.h/2;	
 
-	this.drawBox(absBox);
+//	this.drawBox(absBox);
 	if( !GAMEVIEW.BoxIsInCamera(absBox) )		return;
 
 

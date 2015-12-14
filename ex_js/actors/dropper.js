@@ -121,6 +121,10 @@ DropperActor.prototype.dropLoaded = function(time,item)
 	{
 		actor = CircleEnemy.alloc();
 	}
+	if (type == "WHEEL")
+	{
+		actor = WheelEnemy.alloc();
+	}
 
 	if (actor != null)
 	{
@@ -152,11 +156,13 @@ DropperActor.prototype.tryCleaning = function()
 	//    console.log(c);
 	for (var i in actors)
 	{
-		if (actors[i].alive && actors[i].position.y > (this.position.y + 800))
+		if (actors[i].alive && actors[i] instanceof EnemyActor)
 		{
-			if (actors[i] instanceof EnemyActor)		actors[i].alive = false;
-			if (actors[i] instanceof SwayEnemy)			actors[i].alive = false;
-			if (actors[i] instanceof CircleEnemy)		actors[i].alive = false;
+			if(actors[i].position.y > (this.position.y+400+actors[i].deadLength)) {
+				if (actors[i] instanceof EnemyActor)		actors[i].alive = false;
+				if (actors[i] instanceof SwayEnemy)			actors[i].alive = false;
+				if (actors[i] instanceof CircleEnemy)		actors[i].alive = false;
+			}
 		}
 	}
 };

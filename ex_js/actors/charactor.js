@@ -10,6 +10,7 @@ CharActor.prototype.identity = function() {
 };
 CharActor.prototype.init = function() {
 	Actor.prototype.init.call(this);
+	this.debugMode = 0;
 
 	this.size = {w:24,h:36};
 	this.position = {x:0,y:0};
@@ -35,9 +36,12 @@ CharActor.prototype.init = function() {
 	this.cooldown = GAMEMODEL.gameClock.elapsedMS();
 	this.coolshot = 120;
 
+	this.started = false;
+	this.startedTime = GAMEMODEL.gameClock.elapsedMS();
+	this.startedTicks = 1000;
+
 	this.keyTimeList = [];
 	for(var i=0; i<4; i++)	this.keyTimeList[i] = GAMEMODEL.gameClock.elapsedMS();
-
 
 
 	this.updatePosition();	
@@ -64,6 +68,17 @@ CharActor.prototype.draw = function() {
 CharActor.prototype.update = function() {
 	Actor.prototype.update.call(this);
 	
+		var curtime = GAMEMODEL.gameClock.elapsedMS();
+
+	if(!this.started) {
+		if( (this.startedTime+this.startedTicks) <= curtime ) {
+			this.started = true;
+			this.startedTime = GAMEMODEL.gameClock.elapsedMS();
+			this.cooldown = this.startedTime;
+		}
+	}
+
+
 	this.updateCurrentMode();
 	this.updateCurrentAnimation();
 	
@@ -76,16 +91,19 @@ CharActor.prototype.update = function() {
 //	newPos.y -= this.speedUpwards*this.ticksDiff;
 	this.updatePosition(newPos);
 
-		var curtime = GAMEMODEL.gameClock.elapsedMS();
 
 
-	if(this.cooldown < (curtime+this.coolshot) ) {
-		this.cooldown += this.coolshot;
-		this.shoot();
+	if(this.started) {
+		if(this.cooldown < (curtime+this.coolshot) ) {
+			this.cooldown += this.coolshot;
+			this.shoot();
+		}
 	}
 
-	if(this.health < 0)		GAMEMODEL.endGame();
-	
+	if(this.health < 0)	{
+		if(this.debugMode==1)		return;
+		GAMEMODEL.endGame();
+	}
 	
 //	if(this.animateModule != null)	this.animateModule.update();
 };
@@ -123,15 +141,15 @@ CharActor.prototype.updateCurrentMode = function() {
 CharActor.prototype.updateCurrentAnimation = function() {
 };
 CharActor.prototype.shoot = function() {
-	var rock = ShotActor.alloc();
+				if(this.debugMode==1)	return;
+	var rock = PlayerShotActor.alloc();
 	rock.updatePosition(this.position);
 	rock.heading.x=0;
 	rock.heading.y=-1;
-	rock.direction=0;
 	rock.shiftPosition({x:rock.heading.x*this.size.w/2,y:rock.heading.y*this.size.h/2});
 	rock.firer=this;
 
-    GAMEMODEL.gameSession.gameWorld.addActor(rock,'bullet');
+    GAMEMODEL.gameSession.gameWorld.addActor(rock,'playerbullet');
 
 	if(GAMEVIEW.BoxIsInCamera(this.absBox)) {
 		var r=0.9+ 0.3*Math.random();
@@ -165,6 +183,12 @@ CharActor.prototype.readInput = function(inputobj)
 {
 	var keyused = false;
 	var keyids = GAMECONTROL.keyIDs;
+	if(keyids['KEY_1'] == inputobj.keyID) {
+		if(inputobj.keypress == false)		this.debugMode = 0;
+	}
+	if(keyids['KEY_2'] == inputobj.keyID) {
+		if(inputobj.keypress == false)		this.debugMode = 1;
+	}
 	if(keyids['KEY_ARROW_UP'] == inputobj.keyID || keyids['KEY_W'] == inputobj.keyID)
 	{
 		keyused = true;

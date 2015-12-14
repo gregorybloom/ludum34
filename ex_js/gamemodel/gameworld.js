@@ -18,6 +18,7 @@ GameWorld.prototype.init = function() {
     this.camField = null;
 
     this.gameBullets = [];
+    this.playerBullets = [];
 
     this.borderBlock = "NESW";
 };
@@ -30,7 +31,13 @@ GameWorld.prototype.clear = function() {
         this.gameBullets[i].clear();
         this.gameBullets.splice(i,1);
     }
+    for(var i in this.playerBullets)
+    {
+        this.playerBullets[i].clear();
+        this.playerBullets.splice(i,1);
+    }
     this.gameBullets = {};    
+    this.playerBullets = {};    
 };
 GameWorld.prototype.load = function() {
 
@@ -48,6 +55,9 @@ GameWorld.prototype.addActor = function(act,type) {
     if(type === "bullet") {
         this.gameBullets.push(act);
     }
+    else if(type === "playerbullet") {
+        this.playerBullets.push(act);
+    }
     else        WorldActor.prototype.addActor.call(this,act,type);
 };
 GameWorld.prototype.update = function() {
@@ -61,6 +71,11 @@ GameWorld.prototype.update = function() {
     }
     for(var i in this.gameBullets) {
         if(this.gameBullets[i].alive) {
+            GAMEMODEL.activeObjs+=1;
+        }
+    }
+    for(var i in this.playerBullets) {
+        if(this.playerBullets[i].alive) {
             GAMEMODEL.activeObjs+=1;
         }
     }
@@ -97,6 +112,10 @@ GameWorld.prototype.updateAll = function() {
     {
         if(this.gameBullets[i] instanceof Actor)  this.gameBullets[i].update();
     }
+    for(var i in this.playerBullets)
+    {
+        if(this.playerBullets[i] instanceof Actor)  this.playerBullets[i].update();
+    }
 };
 
 GameWorld.prototype.drawAll = function() {
@@ -128,6 +147,10 @@ GameWorld.prototype.drawAll = function() {
     {
             this.gameBullets[i].draw();
     }
+    for(var i in this.playerBullets)
+    {
+            this.playerBullets[i].draw();
+    }
     for(var i in this.gameActors)
     {
             this.gameActors[i].draw();
@@ -155,15 +178,20 @@ GameWorld.prototype.cleanAll = function() {
         {
                 if(this.gameBullets[i] instanceof Actor && this.gameBullets[i].alive == false)
                 {
-//                        this.gameActors[i].clear();
                         this.gameBullets.splice(i,1);
+                }
+        }   
+        for(var i in this.playerBullets)
+        {
+                if(this.playerBullets[i] instanceof Actor && this.playerBullets[i].alive == false)
+                {
+                        this.playerBullets.splice(i,1);
                 }
         }   
         for(var i in this.gameActors)
         {
                 if(this.gameActors[i] instanceof Actor && this.gameActors[i].alive == false)
                 {
-//                        this.gameActors[i].clear();
                         this.gameActors.splice(i,1);
                 }
         }	
@@ -171,8 +199,7 @@ GameWorld.prototype.cleanAll = function() {
         {
                 if(this.gameArtbits[i] instanceof Actor && this.gameArtbits[i].alive == false)
                 {
-//                        this.gameArtbits[i].clear();
-                        this.gameArtbits[i];
+                        this.gameArtbits.splice(i,1);
                 }
         }	
 
@@ -188,72 +215,23 @@ GameWorld.prototype.collideAll = function() {
         {
             this.gamePlayer.collide( this.gameBullets[i] );
             this.gameBullets[i].collide( this.gamePlayer );
+
+            this.camField.collide( this.gameBullets[i] );
+            this.gameBullets[i].collide( this.camField );
         }
-    
+    }  
+    for(var i in this.playerBullets)
+    {
         for(var j in this.gameActors)
         {
-            if(this.gameActors[j] instanceof Actor && this.gameBullets[i] != this.gameActors[j])
+            if(this.gameActors[j] instanceof Actor && this.playerBullets[i] != this.gameActors[j])
             {
-                this.gameActors[j].collide( this.gameBullets[i] );
-                this.gameBullets[i].collide( this.gameActors[j] );
+                this.gameActors[j].collide( this.playerBullets[i] );
+                this.playerBullets[i].collide( this.gameActors[j] );
             }
         }  
     }
 };
-GameWorld.prototype.collide = function(act) {
-    if(typeof act === "undefined")      return;
-    if( !this.alive || !act.alive )             return;
-    if(  this.collideType(act) != true  )                           return;
-    if(  GAMEGEOM.BoxContains(this.absBox, act.absBox)==false  )   
-    {
-        this.collideVs(act);
-    }
-};
-GameWorld.prototype.collideType = function(act) {
-//    if(act instanceof CharActor)     return true;
-    return false;
-};
-
-GameWorld.prototype.collideVs = function( actor ) {
-    if(actor instanceof CamField)   return;
-    if(actor instanceof RockActor) {
-        actor.alive = false;
-        return;
-    }
-
-    var shiftpos = {x:0,y:0};
-    if( actor.absBox.y < this.absBox.y && this.borderBlock.indexOf("N") !== -1)
-    {
-        shiftpos.y = this.absBox.y - actor.absBox.y;
-    }
-    if( this.borderBlock.indexOf("E") !== -1 )
-    {
-        var ptC = this.absBox.x + this.absBox.w;
-        var ptactC = actor.absBox.x + actor.absBox.w;
-        if(ptactC > ptC)                shiftpos.x = ptC - ptactC;
-    }
-    if( this.borderBlock.indexOf("S") !== -1 )
-    {
-        var ptD = this.absBox.y + this.absBox.h;
-        var ptactD = actor.absBox.y + actor.absBox.h;
-        if(ptactD > ptD)                shiftpos.y = ptD - ptactD;
-    }
-    if( actor.absBox.x < this.absBox.x && this.borderBlock.indexOf("W") !== -1 )
-    {
-        shiftpos.x = this.absBox.x - actor.absBox.x;
-    }
-
-    if(shiftpos.x != 0 || shiftpos.y != 0)
-    {
-        shiftpos.x = shiftpos.x + actor.position.x;
-        shiftpos.y = shiftpos.y + actor.position.y;
-    
-        actor.updatePosition(shiftpos);
-        if(actor instanceof RockActor)      actor.alive=false;
-    }
-};
-
-
 
 GameWorld.alloc = function() {
 	var vc = new GameWorld();
