@@ -19,8 +19,8 @@ GAMEVIEW.drawAll = function()
         var str = "MUSIC LOADING...";
         this.context.lineWidth = "3";
         this.context.strokeStyle = "#FFFFFF";
-        this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
         this.context.font = "10pt Arial";
+        this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
         this.context.fillStyle = "#000000";
         this.context.fillText(str,ScreenPt.x,ScreenPt.y);
     }
@@ -33,17 +33,17 @@ GAMEVIEW.drawAll = function()
         var str = "GAME PAUSED";
         this.context.lineWidth = "3";
         this.context.strokeStyle = "#FFFFFF";
-        this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
         this.context.font = "10pt Arial";
+        this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
         this.context.fillStyle = "#000000";
         this.context.fillText(str,ScreenPt.x,ScreenPt.y);
     }
     
-    var ScreenPt = {x:10,y:570};
+    var ScreenPt = {x:710,y:585};
     this.context.lineWidth = "3";
     this.context.strokeStyle = "#FFFFFF";
-    this.context.strokeText(fps+" fps",ScreenPt.x,ScreenPt.y);
     this.context.font = "10pt Arial";
+    this.context.strokeText(fps+" fps",ScreenPt.x,ScreenPt.y);
     this.context.fillStyle = "#000000";
     this.context.fillText(fps+" fps",ScreenPt.x,ScreenPt.y);
 
@@ -51,12 +51,12 @@ GAMEVIEW.drawAll = function()
     var str = GAMEMODEL.playerScore+" pts";
     this.context.lineWidth = "3";
     this.context.strokeStyle = "#FFFFFF";
-    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
     this.context.font = "10pt Arial";
+    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
     this.context.fillStyle = "#000000";
     this.context.fillText(str,ScreenPt.x,ScreenPt.y);
 
-    var ScreenPt = {x:160,y:585};
+    var ScreenPt = {x:110,y:585};
     var str = "";
     if(GAMEMODEL.gameSession != null && GAMEMODEL.gameSession.gameWorld != null)
     {
@@ -64,8 +64,8 @@ GAMEVIEW.drawAll = function()
     }
     this.context.lineWidth = "3";
     this.context.strokeStyle = "#FFFFFF";
-    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
     this.context.font = "10pt Arial";
+    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
     this.context.fillStyle = "#000000";
     this.context.fillText(str,ScreenPt.x,ScreenPt.y);
 
@@ -209,7 +209,13 @@ GAMEMODEL.fillDropper = function(dropper)
     dropper.addLoad(0,0,0,50,850,{type:"TEXT",data:{loadout:0,text:"CIRCLES IN THE CLOUDS",fsize:44}});
     dropper.addLoad(0,0,200,50,850,{type:"TEXT",data:{loadout:0,text:"(unfinished version)",fsize:34}});
 
-    dropper.addLoad(0,0,1800,50,850,{type:"TEXT",data:{loadout:0,text:"That's all the new stuff for now :(",fsize:24}});
+    dropper.addLoad(0,0,1900,50,850,{type:"TEXT",data:{loadout:0,text:"That's all the new stuff for now :(",fsize:24}});
+    dropper.addLoad(0,0,2500,50,850,{type:"TEXT",data:{loadout:0,text:"Ok honestly this time...",fsize:24}});
+    dropper.addLoad(0,0,2550,50,850,{type:"TEXT",data:{loadout:0,text:"That's the end for now. X_X",fsize:24}});
+    dropper.addLoad(0,0,2650,50,850,{type:"TEXT",data:{loadout:0,text:"CREDITS:",fsize:24}});
+    dropper.addLoad(0,0,2700,50,850,{type:"TEXT",data:{loadout:0,text:"GREGORY BLOOM",fsize:24}});
+    dropper.addLoad(0,0,2750,50,850,{type:"TEXT",data:{loadout:0,text:"JEREMY OUILLETTE",fsize:24}});
+    dropper.addLoad(0,0,2800,50,850,{type:"TEXT",data:{loadout:0,text:"ETHAN BLOOM",fsize:24}});
 
     dropper.addLoad(0,0,0,400,750,{type:"CIRCLE",data:{loadout:0}});
     dropper.addLoad(0,0,100,400,750,{type:"CIRCLE",data:{classtype:1}});
@@ -221,12 +227,14 @@ GAMEMODEL.fillDropper = function(dropper)
     dropper.addLoad(0,0,300,400,700,{type:"CIRCLE",data:''});
     dropper.addLoad(0,0,300,450,700,{type:"CIRCLE",data:''});
 
-    dropper.addLoad(0,0,100,400,800,{type:"WHEEL",data:{loadout:0,wheelcount:3}});
-    dropper.addLoad(0,0,400,450,800,{type:"WHEEL",data:{loadout:1,wheelcount:4}});
-    dropper.addLoad(0,0,700,450,800,{type:"WHEEL",data:{loadout:2,wheelcount:6}});
-    dropper.addLoad(0,0,1100,450,800,{type:"WHEEL",data:{loadout:3}});
-    dropper.addLoad(0,0,1500,450,800,{type:"WHEEL",data:{loadout:4}});
-    dropper.addLoad(0,0,1750,450,800,{type:"WHEEL",data:{loadout:2,wheelcount:8}});
+//    dropper.addLoad(0,0,380,450,800,{type:"WHEEL",data:{loadout:1,wheelcount:4}});
+    dropper.addLoad(0,0,400,400,800,{type:"WHEEL",data:{loadout:0,wheelcount:16}});
+    dropper.addLoad(0,0,600,450,800,{type:"WHEEL",data:{loadout:2,wheelcount:6}});
+    dropper.addLoad(0,0,1300,250,800,{type:"WHEEL",data:{loadout:3,health:4}});
+    dropper.addLoad(0,0,1300,550,800,{type:"WHEEL",data:{loadout:3,health:4}});
+    dropper.addLoad(0,0,1550,450,800,{type:"WHEEL",data:{loadout:4}});
+    dropper.addLoad(0,0,2175,450,800,{type:"WHEEL",data:{loadout:2,wheelcount:8,health:2}});
+    dropper.addLoad(0,0,2175,450,800,{type:"WHEEL",data:{loadout:4}});
 
     for(var i=0; i<15; i++) {
         var r1=Math.random()*0.75;

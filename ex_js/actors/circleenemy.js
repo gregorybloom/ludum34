@@ -58,9 +58,11 @@ CircleEnemy.prototype.loadingData = function(data)
 		if(this.enemyClass==null)	this.enemyClass = "WHEELMAN";
 		if(this.enemyType==null)	this.enemyType=0;
 		if(this.enemyType==1)		this.health=4;
+		if(this.enemyType==3)		this.health=4;
 		if(this.enemyType==2)		this.health=8;
 		if(this.enemyType==2)		this.target = GAMEMODEL.gameSession.gamePlayer;
-		this.scoreValue += this.enemyType*this.enemyType*100;
+		if(this.enemyType==3)		this.target = GAMEMODEL.gameSession.gamePlayer;
+		this.scoreValue += this.health*50;
 		this.stepNum=0;
 	}
 
@@ -84,7 +86,10 @@ CircleEnemy.prototype.draw = function()
 	}
 	else if(this.enemyClass == "WHEELMAN" && this.enemyType < 10) {
 		if(!this.deathBegin) {
-			GAMEVIEW.drawCircle(this.absPosition, this.radius, "#FF6600", 6);		
+			if(this.enemyType==0)	GAMEVIEW.drawCircle(this.absPosition, this.radius, "#FF6600", 6);		
+			if(this.enemyType==1)	GAMEVIEW.drawCircle(this.absPosition, this.radius, "#CC3300", 6);		
+			if(this.enemyType==3)	GAMEVIEW.drawCircle(this.absPosition, this.radius, "#CC3300", 6);		
+			if(this.enemyType==2)	GAMEVIEW.drawCircle(this.absPosition, this.radius, "#330000", 6);		
 		} else {
 			GAMEVIEW.drawCircle(this.absPosition, this.deathRadius, "#666666", 1);		
 		}	
@@ -194,7 +199,7 @@ CircleEnemy.prototype.beginShoot = function() {
 		rock.updatePosition(this.position);
 		rock.heading.x = 0;
 		rock.heading.y = 1;
-		if(this.target && this.enemyType == 2)	rock.heading=this.getHeadingAt(this.target.absPosition);
+		if(this.target)						rock.heading=this.getHeadingAt(this.target.absPosition);
 
 		rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
 		rock.firer = this;

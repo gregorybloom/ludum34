@@ -1,15 +1,15 @@
-function WheelEnemy()
+function LegionEnemy()
 {
 }
 
-WheelEnemy.prototype = new SquadEnemy;
+LegionEnemy.prototype = new SquadEnemy;
 
-WheelEnemy.prototype.identity = function()
+LegionEnemy.prototype.identity = function()
 {
-	return ('WheelEnemy (' + this._dom.id + ')');
+	return ('LegionEnemy (' + this._dom.id + ')');
 };
 
-WheelEnemy.prototype.init = function()
+LegionEnemy.prototype.init = function()
 {
 	SquadEnemy.prototype.init.call(this);
 
@@ -25,18 +25,15 @@ WheelEnemy.prototype.init = function()
 	this.heading.y = 1;
 	this.unitSpeed = 0.04;
 
-	this.squadHealth=null;
 	this.squadUnitLoadout=1;
-	this.wheelFilled = false;
-	this.wheelRadius = -100;
-	this.angleStagger = 30;
-	this.wheelSpd = 0.04;
-	this.wheelAngle = 0;
-	this.wheelSet = {};
-	this.wheelAngles = {};
-	this.turnWheel = false;
+	this.legionFilled = false;
+	this.legionStagger = 30;
+	this.legionSpd = 0.04;
+	this.legionSet = {};
+	this.legionAngles = {};
+	this.moveLegion = false;
 
-	this.wheelDeadLength = 200;
+	this.legionDeadLength = 200;
 
 	this.actionMode = "MODE_STILL";
 	this.updatePosition();
@@ -49,7 +46,7 @@ WheelEnemy.prototype.init = function()
 	this.beginStep(0,'');
 };
 
-WheelEnemy.prototype.loadingData = function(data)
+LegionEnemy.prototype.loadingData = function(data)
 {
 	if(!data.loadout)		this.squadLoadout=0;
 	SquadEnemy.prototype.loadingData.call(this,data);
@@ -60,7 +57,7 @@ WheelEnemy.prototype.loadingData = function(data)
 
 	if(data.loadout == 0) {
 		this.unitSpeed = 0.04;
-		this.squadCount = 12;
+		this.squadCount = 5;
 		this.wheelRadius = -100;
 		this.angleStagger = 30;
 		this.wheelSpd = 0.04;
@@ -88,7 +85,7 @@ WheelEnemy.prototype.loadingData = function(data)
 		this.wheelRadius = -60;
 		this.angleStagger = 60;
 		this.wheelSpd = 0.25;
-		this.squadUnitType = 3;
+		this.squadUnitType = 0;
 	}
 	if(data.loadout == 4) {
 		this.unitSpeed = 0.05;
@@ -100,12 +97,10 @@ WheelEnemy.prototype.loadingData = function(data)
 	}
 	if(data.anglestagger)	this.angleStagger = data.anglestagger;
 	if(data.wheelradius)	this.wheelRadius = -data.wheelradius;
-	if(data.health)			this.squadHealth = data.health;
-
 
 	this.wheelDeadLength = Math.abs(this.wheelRadius)*2;
 };
-WheelEnemy.prototype.midStep = function(timeplace,stepnum,step) {
+LegionEnemy.prototype.midStep = function(timeplace,stepnum,step) {
 	if(this.squadClass == "SLOWDROP" && this.squadType < 10) {
 		if(stepnum == 1){
 			var CF = GAMEMODEL.gameSession.gameWorld.camField;
@@ -122,7 +117,7 @@ WheelEnemy.prototype.midStep = function(timeplace,stepnum,step) {
 		}
 	}
 };
-WheelEnemy.prototype.beginStep = function(stepnum,stepdata) {
+LegionEnemy.prototype.beginStep = function(stepnum,stepdata) {
 	if(this.squadClass == "SLOWDROP" && this.squadType < 10) {
 		if(stepnum==0) {
 			this.loadStep(1, 0, {});
@@ -134,11 +129,6 @@ WheelEnemy.prototype.beginStep = function(stepnum,stepdata) {
 				WE.loadingData( {class:"WHEELMAN",classtype:this.squadUnitType,loadout:this.squadUnitLoadout} );
 				WE.updatePosition(this.position);
 				WE.deadLength = this.wheelDeadLength;
-
-				if(this.squadHealth != null)			WE.health = this.squadHealth;
-				if(this.squadHealth != null)			WE.scoreValue += 50*this.squadHealth;
-				if(this.squadLoadout == 0)				WE.scoreValue = 50;
-				
 				this.wheelAngles[i] = (i-Math.floor(this.squadCount/2))*this.angleStagger;
 				WE.shiftPosition(GAMEGEOM.rotatePoint({x:0,y:this.wheelRadius}, this.wheelAngles[i]));
 				this.wheelSet[i] = WE;
@@ -159,13 +149,13 @@ WheelEnemy.prototype.beginStep = function(stepnum,stepdata) {
 	this.stepNum = stepnum;
 };
 
-WheelEnemy.prototype.draw = function()
+LegionEnemy.prototype.draw = function()
 {
 //	SquadEnemy.prototype.draw.call(this);
 //	GAMEVIEW.drawCircle(this.position, this.radius, "#00FF00", 1);
 };
 
-WheelEnemy.prototype.update = function()
+LegionEnemy.prototype.update = function()
 {
 	SquadEnemy.prototype.update.call(this);
 	this.updateMode();
@@ -188,11 +178,11 @@ WheelEnemy.prototype.update = function()
 	if(c==0 && this.wheelFilled)		this.alive=false;
 };
 
-WheelEnemy.prototype.updateCurrentAnimation = function()
+LegionEnemy.prototype.updateCurrentAnimation = function()
 {
 };
 
-WheelEnemy.prototype.updateMode = function()
+LegionEnemy.prototype.updateMode = function()
 {
 	var P1 = null;
 	var P2 = null;
@@ -222,7 +212,7 @@ WheelEnemy.prototype.updateMode = function()
 	this.wheelAngle = this.wheelAngle % 360;
 };
 
-WheelEnemy.prototype.collideType = function(act)
+LegionEnemy.prototype.collideType = function(act)
 {
 	if (act instanceof CharActor)
 	{
@@ -232,7 +222,7 @@ WheelEnemy.prototype.collideType = function(act)
 	return false;
 };
 
-WheelEnemy.prototype.collideVs = function(act)
+LegionEnemy.prototype.collideVs = function(act)
 {
 	if (act instanceof CharActor)
 	{
@@ -242,24 +232,24 @@ WheelEnemy.prototype.collideVs = function(act)
 };
 
 
-WheelEnemy.prototype.checkShoot = function() {
+LegionEnemy.prototype.checkShoot = function() {
 };
-WheelEnemy.prototype.beginShoot = function() {
+LegionEnemy.prototype.beginShoot = function() {
 };
 
-WheelEnemy.prototype.collide = function(act) {
+LegionEnemy.prototype.collide = function(act) {
 	SquadEnemy.prototype.collide.call(this,act);
 };
-WheelEnemy.prototype.collideType = function(act) {
+LegionEnemy.prototype.collideType = function(act) {
 	return false;
 };
-WheelEnemy.prototype.collideVs = function(act) {
+LegionEnemy.prototype.collideVs = function(act) {
 };
 
 
-WheelEnemy.alloc = function()
+LegionEnemy.alloc = function()
 {
-	var vc = new WheelEnemy();
+	var vc = new LegionEnemy();
 	vc.init();
 	return vc;
 };

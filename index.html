@@ -7,6 +7,10 @@
 		</title>
 <script>
 /*
+		Gregory Bloom, Jeremy Ouillette, and Ethan Bloom
+		Circles in the Clouds, 12/14/2015
+
+
 https://developers.google.com/web/tools/chrome-devtools/profile/memory-problems/memory-diagnosis
 http://stackoverflow.com/questions/19621074/finding-javascript-memory-leaks-with-chrome
 https://code.google.com/p/leak-finder-for-javascript/
@@ -111,6 +115,9 @@ function worldUpdate() {
 
 
 <canvas id="render" width="800" height="600"></canvas>
+	Developed by:<br>
+		<b>Gregory Bloom</b>, <b>Jeremy Ouillette</b>, and <b>Ethan Bloom</b>
+		<br>
 
 
 <script>
@@ -138,137 +145,9 @@ GAMEMODEL.init();
 GAMEMODEL.startGame();
 </script>
 <br>
-<b>Characters don't have a 'flipped sprite' version, so they moonwalk right now. Will be fixed</b>
-
-
-<br>
-<input type="button" onclick="GAMEMUSIC.launchPiWebWorker()" value="Calculate Pi" />
-<br>
-<br>
-<div id="PiValue">PI value appears here</div>
 
 
 
-<p>
-	<b>Left to do:</b>
-</p>
-
-<ol>
-
-<li>
-	GameModel: <strike>FPS Reading and display (for testing!).</strike> Other basic readout info
-</li>
-
-<li>
-	Actors: Verify proper death/cleaning (objects disappear from memory when dead)
-</li>
-<li>
-	Actors: Graphic Grid objects (proper tile grid objects). Collision Grids too.
-</li>
-
-<li>
-	GameAreas: Active/Passive/Display object support (to determine collision needs)
-</li>
-<li>
-	GameAreas: Collision Grids (static and subsectors) for high-load collision activity
-</li>
-<li>
-	GameModel: Create tiered GameClocks and GameCameras and access. Pause modes
-</li>
-<li>
-	GameModel: Create <b>Menu Manager</b> and components. Display modes
-</li>
-<li>
-	GameView: OpenGL drawing mode
-</li>
-<li>
-	Create Scripts: create action scripts, script frames, and script elements
-</li>
-<li>
-	Actors: Create <b>Action Scripting Module</b>. and Module objects (Link, swing that sword!)
-</li>
-<li>
-	GameAnimations: Create flipped sprites for left/right, load into image/animation frames/sequences
-</li>
-<li>
-	GameView: Draw-Order, Draw-Layer controls
-</li>
-<li>
-	Create <b>GameSounds</b>: For sound effect management!
-</li>
-<li>
-	GameView: Filter/transform support (allowing 'damage/poison/sfx' flashes)
-</li>
-<li>
-	GameModel: detect off-focus, autopause game
-</li>
-<li>
-	GameMusic: Create better music management: looping, volume control, fading (and local loading?)
-</li>
-<li>
-	MenuManager: opening Loading display, flash (pause?) loading screens for dynamic asset loading
-</li>
-<li>
-	GameMusic: fix 'loading lag' bug?
-</li>
-
-<li>
-	GameArea: Inter-area collision support, automoving between game area lists?
-</li>
-<li>
-	Actors: Nonduplication collision support (cycle collision log, collision time log?)
-</li>
-<li>
-	GameSounds: Positional sound controls
-</li>
-<li>
-	GameControl: Create menu for key rebinding, and GameControl 'translation' schema?
-</li>
-<li>
-	GameView: Variable screensize support. Graphics/sounds options
-</li>
-
-<li>
-	Actors: Create HUD and HUD managers
-</li>
-</ol>
-	<b>The really "big" things:</b>
-<ul>
-<li>
-	GameModel: Read/parse data file access (dynamic loading of data)
-</li>
-<li>
-	GameModel: Create local file saving/loading (save and load game/options)
-</li>
-<li>
-	GameModel: Resource management (manage necessary graphics/sounds/music on a GameArea basis)
-</li>
-<li>
-	GameArea: Area manager (loading/storing areas, state management, content manager?)
-</li>
-<li>
-	GameDebug: Game Debugger mode, HUD, and options
-</li>
-</ul>
-
-<p>
-	<b>Wish List:</b>
-</p>
-<ul>
-<li>
-	GameControls: Controller support?
-</li>
-<li>
-	CollisionGrids: Swept collision handling?
-</li>
-<li>
-	Full saved-game options and management
-</li>
-<li>
-	2-4 Multiplayer support
-</li>
-
-</ul>
 
 </body>
 </html>
