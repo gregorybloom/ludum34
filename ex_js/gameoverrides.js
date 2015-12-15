@@ -48,13 +48,13 @@ GAMEVIEW.drawAll = function()
     this.context.fillText(fps+" fps",ScreenPt.x,ScreenPt.y);
 
     var ScreenPt = {x:10,y:585};
-    var str = GAMEMODEL.activeObjs+" active objs";
+    var str = GAMEMODEL.playerScore+" pts";
     this.context.lineWidth = "3";
     this.context.strokeStyle = "#FFFFFF";
-//    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
+    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
     this.context.font = "10pt Arial";
     this.context.fillStyle = "#000000";
-//    this.context.fillText(str,ScreenPt.x,ScreenPt.y);
+    this.context.fillText(str,ScreenPt.x,ScreenPt.y);
 
     var ScreenPt = {x:160,y:585};
     var str = "";

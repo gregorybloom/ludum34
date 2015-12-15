@@ -11,6 +11,7 @@ GAMEMODEL={
     modelCamera: null,
     modelClock: null,
 
+    playerScore: 0,
 
 	gameAreas: {},
 	gamePlayers: {},
@@ -88,6 +89,7 @@ GAMEMODEL.startGame = function()
 			console.log("* startgame *");
 	this.gameClock.restart();
 	this.gameMode = "GAME_RUN";
+    this.playerScore = 0;
 
     if(this.gameSession instanceof SessionActor)   
     {

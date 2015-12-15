@@ -41,10 +41,12 @@ CircleEnemy.prototype.init = function()
 CircleEnemy.prototype.loadingData = function(data)
 {
 	EnemyActor.prototype.loadingData.call(this,data);	
+	this.scoreValue = 100;
 
 	if(data.loadout == 0 || !data.loadout) {
 		if(this.enemyClass==null)	this.enemyClass = "LEGGIONAIRRE";
 		if(this.enemyType==null)	this.enemyType=0;
+		if(this.enemyType==0)		this.scoreValue = 50;
 		if(this.enemyType>=1)		this.target = GAMEMODEL.gameSession.gamePlayer;
 		if(this.enemyType==2)		this.unitSpeed = 0.08;
 		if(this.enemyType==2)		this.coolShot = 1500;
@@ -58,6 +60,7 @@ CircleEnemy.prototype.loadingData = function(data)
 		if(this.enemyType==1)		this.health=4;
 		if(this.enemyType==2)		this.health=8;
 		if(this.enemyType==2)		this.target = GAMEMODEL.gameSession.gamePlayer;
+		this.scoreValue += this.enemyType*this.enemyType*100;
 		this.stepNum=0;
 	}
 
@@ -106,6 +109,7 @@ CircleEnemy.prototype.update = function()
 CircleEnemy.prototype.beginDeath = function() {
 	if(!this.deathBegin && GAMEVIEW.BoxIsInCamera(this.absBox))
 	{
+		GAMEMODEL.playerScore += this.scoreValue;
 		var r = 0.9 + 0.3 * Math.random();
 		var v = 0.55 + 0.1 * Math.random();
 

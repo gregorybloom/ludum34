@@ -11,6 +11,8 @@ EnemyActor.prototype.init = function() {
 	this.enemyClass = "BASICENEMY";
 	this.enemyType = 0;
 
+	this.scoreValue = 0;
+
 	this.deadLength = 100;
 	this.shotCooldown = GAMEMODEL.gameClock.elapsedMS();
 	this.coolShot = 2000;
