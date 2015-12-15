@@ -75,9 +75,9 @@ BulletActor.prototype.collideVs = function(act) {
 		this.beginDeath();
 
 		if(GAMEVIEW.BoxIsInCamera(act.absBox)) {
-			var r=0.9+ 0.3*Math.random();
-			var v=0.55+ 0.1*Math.random();
-//				act.playSound(6,v,r);
+			var r=0.3+ 0.3*Math.random();
+			var v=1.55+ 0.1*Math.random();
+			this.playSound(1,v,r);
 		}
 	}
 };

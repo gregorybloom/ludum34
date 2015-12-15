@@ -45,6 +45,9 @@ CircleEnemy.prototype.loadingData = function(data)
 	if(data.loadout == 0 || !data.loadout) {
 		if(this.enemyClass==null)	this.enemyClass = "LEGGIONAIRRE";
 		if(this.enemyType==null)	this.enemyType=0;
+		if(this.enemyType>=1)		this.target = GAMEMODEL.gameSession.gamePlayer;
+		if(this.enemyType==2)		this.unitSpeed = 0.08;
+		if(this.enemyType==2)		this.coolShot = 1500;
 
 		this.stepNum=0;
 		this.beginStep(this.stepNum,'');
@@ -52,10 +55,12 @@ CircleEnemy.prototype.loadingData = function(data)
 	if(data.loadout == 1) {
 		if(this.enemyClass==null)	this.enemyClass = "WHEELMAN";
 		if(this.enemyType==null)	this.enemyType=0;
+		if(this.enemyType==1)		this.health=4;
+		if(this.enemyType==2)		this.health=8;
+		if(this.enemyType==2)		this.target = GAMEMODEL.gameSession.gamePlayer;
 		this.stepNum=0;
 	}
 
-	if(this.enemyType==1)		this.target = GAMEMODEL.gameSession.gamePlayer;
 };
 
 CircleEnemy.prototype.draw = function()
@@ -68,7 +73,8 @@ CircleEnemy.prototype.draw = function()
 //			if(  GAMEGEOM.BoxIntersects(this.absBox, CF.absBox)==false  )
 //				GAMEVIEW.fillCircle(this.absPosition,this.radius,"#009900");
 //			else
-				GAMEVIEW.fillCircle(this.absPosition,this.radius,"#990000");
+				if(this.enemyType==0)	GAMEVIEW.fillCircle(this.absPosition,this.radius,"#990000");
+				if(this.enemyType>=1)	GAMEVIEW.fillCircle(this.absPosition,this.radius,"#000066");
 		} else {
 			GAMEVIEW.drawCircle(this.absPosition,this.deathRadius,"#666666",1);
 		}	
@@ -97,12 +103,24 @@ CircleEnemy.prototype.update = function()
 		this.animateModule.update();
 	}
 };
+CircleEnemy.prototype.beginDeath = function() {
+	if(!this.deathBegin && GAMEVIEW.BoxIsInCamera(this.absBox))
+	{
+		var r = 0.9 + 0.3 * Math.random();
+		var v = 0.55 + 0.1 * Math.random();
+
+		this.playSound(0, v, r);
+	}
+	EnemyActor.prototype.beginDeath.call(this);
+};
 CircleEnemy.prototype.updateDeath = function() {
 	var curtime = GAMEMODEL.gameClock.elapsedMS();
 	var deathDiff = (curtime - this.deathStart)/this.deathClock;
 
 	this.deathRadius = this.radius*0.9 + 8*(deathDiff);
 };
+
+
 
 CircleEnemy.prototype.midStep = function(timeplace,stepnum,step) {
 };
@@ -112,6 +130,7 @@ CircleEnemy.prototype.beginStep = function(stepnum,stepdata) {
 			{
 				delete this.moveModule.moveScriptSet[0];
 			}
+			if(this.enemyType == 2)		return;
 
 			var speed = this.unitSpeedH;
 
@@ -160,7 +179,7 @@ CircleEnemy.prototype.beginShoot = function() {
 
 		rock.heading.x = 0;
 		rock.heading.y = 1;
-		if(this.target && this.enemyType == 1)	rock.heading=this.getHeadingAt(this.target.absPosition);
+		if(this.target && this.enemyType >= 1)	rock.heading=this.getHeadingAt(this.target.absPosition);
 
 		rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
 		rock.firer = this;
@@ -171,19 +190,11 @@ CircleEnemy.prototype.beginShoot = function() {
 		rock.updatePosition(this.position);
 		rock.heading.x = 0;
 		rock.heading.y = 1;
+		if(this.target && this.enemyType == 2)	rock.heading=this.getHeadingAt(this.target.absPosition);
+
 		rock.shiftPosition({x: rock.heading.x* this.size.w / 2, y: rock.heading.y* this.size.h / 2});
 		rock.firer = this;
 		GAMEMODEL.gameSession.gameWorld.addActor(rock, 'bullet');
-	}
-	if (GAMEVIEW.BoxIsInCamera(this.absBox))
-	{
-		var r = 0.9 + 0.3 * Math.random();
-		var v = 0.55 + 0.1 * Math.random();
-
-		if (Math.random() > 0.6)
-		{
-//			this.playSound(4, v, r);
-		}
 	}
 };
 
@@ -215,10 +226,18 @@ CircleEnemy.prototype.collideVs = function(act) {
 		r=r*r;
 
 		if(d <= r) {
-			this.beginDeath();
 			act.beginDeath();
-//			act.alive = false;
-//			this.alive = false;
+			this.health -= act.damage;
+			if(this.health < 0) {
+				this.beginDeath();
+			}
+			else if(GAMEVIEW.BoxIsInCamera(this.absBox))
+			{
+				var r =	1.7 + 0.3 * Math.random();
+				var v = 0.45 + 0.1 * Math.random();
+
+				act.playSound(1, v, r);
+			}
 		}
 	}
 };

@@ -26,6 +26,8 @@ SquadEnemy.prototype.init = function()
 
 	this.squadFilled = false;
 
+	this.squadUnitLoadout = 0;
+	this.squadUnitType = 0;
 	this.squadCount = 5;
 	this.squadAngle = 0;
 	this.squadSet = {};
@@ -37,7 +39,7 @@ SquadEnemy.prototype.init = function()
 
 	this.actionMode = "MODE_STILL";
 	this.updatePosition();
-	
+
 	this.moveModule = MovingActorModule.alloc();
 	this.moveModule.target = this;
 

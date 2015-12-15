@@ -1,17 +1,12 @@
 
 GAMESOUNDS.load = function() {
     this.gameSFX = [];
-/*    this.gameSFX = ['sounds/effects/m4a1.mp3',
-                                'sounds/effects/m1-garand.mp3',
-                                'sounds/effects/LttP/LTTP_Enemy_Skitter.wav',
-                                'sounds/effects/LttP/LTTP_Link_Push.wav',
-                                'sounds/effects/LttP/LTTP_BallAndChain.wav',
-                                'sounds/effects/LttP/LTTP_Enemy_Hit.wav',
-                                'sounds/effects/LttP/LTTP_Link_Hurt.wav'];
-/**/
+    this.gameSFX[0] = 'sounds/effects/Beep_Low_07.ogg';
+    this.gameSFX[1] = 'sounds/effects/Beep_Tech_01.ogg';
+    this.gameSFX[2] = 'sounds/effects/Explosion_Pulse.ogg';
 };
 GAMEMUSIC.load = function(domain) {
-//    this.gameSongs[0] = "sounds/music/07_from_the_legend_of_zelda_-_triforce_of_the_gods_hyrule_castle.ogg";
+    this.gameSongs[0] = "sounds/music/zero_chan.ogg";
 //    this.gameSongs[1] = "sounds/music/08_from_the_legend_of_zelda_-_triforce_of_the_gods_legend_of_zelda_theme.ogg";
 };
 GAMEVIEW.loadTextures = function()

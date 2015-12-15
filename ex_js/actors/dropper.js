@@ -125,6 +125,10 @@ DropperActor.prototype.dropLoaded = function(time,item)
 	{
 		actor = WheelEnemy.alloc();
 	}
+	if (type == "TEXT")
+	{
+		actor = TextActor.alloc();
+	}
 
 	if (actor != null)
 	{

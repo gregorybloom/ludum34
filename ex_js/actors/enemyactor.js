@@ -18,6 +18,7 @@ EnemyActor.prototype.init = function() {
 	this.ticksDiff = 0;
 	this.heading = {x:0,y:0};
 	this.unitSpeed = 0.04;
+	this.health = 0;
 
 	this.steps = [];
 	this.stepCooldown = GAMEMODEL.gameClock.elapsedMS();

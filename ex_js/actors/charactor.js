@@ -36,6 +36,11 @@ CharActor.prototype.init = function() {
 	this.cooldown = GAMEMODEL.gameClock.elapsedMS();
 	this.coolshot = 120;
 
+	this.deathClock = 1200;
+	this.deathRadius = (this.size.w/2 + this.size.h/2)/2;
+	this.deathStart = GAMEMODEL.gameClock.elapsedMS();
+	this.deathBegin = false;
+
 	this.started = false;
 	this.startedTime = GAMEMODEL.gameClock.elapsedMS();
 	this.startedTicks = 1000;
@@ -50,7 +55,6 @@ CharActor.prototype.draw = function() {
 
 //	Actor.prototype.draw.call(this);
 
-//	GAMEVIEW.drawBox(this.absBox,"#0000ff");
 	var c = "#333333";
 	if(this.health < 20)	c = "#444444";
 	if(this.health < 18)	c = "#555555";
@@ -62,12 +66,33 @@ CharActor.prototype.draw = function() {
 	if(this.health < 6)		c = "#bbbbbb";
 	if(this.health < 4)		c = "#cccccc";
 	if(this.health < 2)		c = "#dddddd";
+	if(!this.deathBegin) {
+		GAMEVIEW.drawEllipses(this.absPosition, this.size, {x:0,y:5}, true, 0, c);
+	}
+	else {
+		if(this.deathRadius == 0)	return;
+		GAMEVIEW.drawEllipses(this.absPosition, {w:this.deathRadius*5,h:this.deathRadius*2.25}, {x:0,y:0}, true, 0, "#ffff66");
+		GAMEVIEW.drawEllipses(this.absPosition, {w:this.deathRadius*3,h:this.deathRadius*2}, {x:0,y:0}, true, 0, "#cccccc");
+		GAMEVIEW.drawEllipses(this.absPosition, {w:this.deathRadius*2,h:this.deathRadius*3}, {x:0,y:0}, true, 0, "#dddddd");
 
-	GAMEVIEW.drawEllipses(this.absPosition, this.size, {x:0,y:5}, true, 0, c);
+		GAMEVIEW.fillCircle(this.absPosition,this.deathRadius*0.6,"#cc0000",1);
+		GAMEVIEW.fillCircle(this.absPosition,this.deathRadius*0.45,"#ff6600",1);
+		GAMEVIEW.fillCircle(this.absPosition,this.deathRadius*0.3,"#ffcc00",1);
+
+		GAMEVIEW.drawEllipses(this.absPosition, {w:this.deathRadius*2,h:this.deathRadius*3}, {x:0,y:0}, false, 0, "#999999");
+		GAMEVIEW.drawEllipses(this.absPosition, {w:this.deathRadius*3,h:this.deathRadius*2}, {x:0,y:0}, false, 0, "#666666");
+		GAMEVIEW.drawEllipses(this.absPosition, {w:this.deathRadius*5,h:this.deathRadius*2.25}, {x:0,y:0}, false, 0, "#666666");
+		GAMEVIEW.drawCircle(this.absPosition,this.deathRadius,"#666666",1);
+		GAMEVIEW.drawCircle(this.absPosition,this.deathRadius*0.6,"#666666",1);
+	}
 };
 CharActor.prototype.update = function() {
 	Actor.prototype.update.call(this);
 	
+	this.checkDeath();
+	if(this.deathBegin)		this.updateDeath();
+	this.checkEnd();
+
 		var curtime = GAMEMODEL.gameClock.elapsedMS();
 
 	if(!this.started) {
@@ -92,18 +117,13 @@ CharActor.prototype.update = function() {
 	this.updatePosition(newPos);
 
 
-
-	if(this.started) {
+	if(this.started && !this.deathBegin) {
 		if(this.cooldown < (curtime+this.coolshot) ) {
 			this.cooldown += this.coolshot;
 			this.shoot();
 		}
 	}
 
-	if(this.health < 0)	{
-		if(this.debugMode==1)		return;
-		GAMEMODEL.endGame();
-	}
 	
 //	if(this.animateModule != null)	this.animateModule.update();
 };
@@ -114,7 +134,8 @@ CharActor.prototype.updateCurrentMode = function() {
 	var L = (GAMECONTROL.getKeyState(keyids['KEY_ARROW_LEFT']) || GAMECONTROL.getKeyState(keyids['KEY_A']));
 	var U = (GAMECONTROL.getKeyState(keyids['KEY_ARROW_UP']) || GAMECONTROL.getKeyState(keyids['KEY_W']));
 	var D = (GAMECONTROL.getKeyState(keyids['KEY_ARROW_DOWN']) || GAMECONTROL.getKeyState(keyids['KEY_S']));
-//	console.log(R +''+ L +''+ U +''+ D);
+
+	if(this.deathBegin)					return;
 
 	if( !D && !U )					this.heading.y = 0;
 	else if ( D && U ) {
@@ -157,6 +178,39 @@ CharActor.prototype.shoot = function() {
 //		if(Math.random() > 0.6)		this.playSound(4,v,r);
 	}
 };
+CharActor.prototype.checkDeath = function() {
+	if(this.debugMode==1)		return;
+	if(this.deathBegin)			return;
+	if(this.health < 0)			this.beginDeath();
+};
+CharActor.prototype.checkEnd = function() {
+	if(!this.deathBegin)		return;
+	var curtime = GAMEMODEL.gameClock.elapsedMS();
+	if(curtime > (this.deathStart+this.deathClock))	{
+		this.alive = false;
+		GAMEMODEL.endGame();
+	}
+};
+CharActor.prototype.beginDeath = function() {
+	this.deathStart = GAMEMODEL.gameClock.elapsedMS();
+	this.deathBegin = true;
+	if(GAMEVIEW.BoxIsInCamera(this.absBox))
+	{
+		var r =	0.9 + 0.3 * Math.random();
+		var v = 1.45 + 0.1 * Math.random();
+
+		this.playSound(2, v, r);
+	}
+
+};
+CharActor.prototype.updateDeath = function() {
+	var curtime = GAMEMODEL.gameClock.elapsedMS();
+	var deathDiff = (curtime - this.deathStart)/this.deathClock;
+
+	this.deathRadius = 5 + 50*(deathDiff);
+	if( (deathDiff) > 0.5)		this.deathRadius=0;
+};
+
 CharActor.prototype.collide = function(act) {
 	Actor.prototype.collide.call(this,act);
 };
@@ -184,10 +238,13 @@ CharActor.prototype.readInput = function(inputobj)
 	var keyused = false;
 	var keyids = GAMECONTROL.keyIDs;
 	if(keyids['KEY_1'] == inputobj.keyID) {
-		if(inputobj.keypress == false)		this.debugMode = 0;
+//		if(inputobj.keypress == false)		this.debugMode = 0;
 	}
 	if(keyids['KEY_2'] == inputobj.keyID) {
-		if(inputobj.keypress == false)		this.debugMode = 1;
+//		if(inputobj.keypress == false)		this.debugMode = 1;
+	}
+	if(keyids['KEY_3'] == inputobj.keyID) {
+//		if(inputobj.keypress == false)		this.debugMode = 2;
 	}
 	if(keyids['KEY_ARROW_UP'] == inputobj.keyID || keyids['KEY_W'] == inputobj.keyID)
 	{

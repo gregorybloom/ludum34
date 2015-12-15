@@ -72,6 +72,7 @@ CamField.prototype.collideVs = function( actor ) {
 		}
 	}
     if(actor instanceof CharActor && (GAMEGEOM.BoxContains(this.absBox, actor.absBox)==false)) {
+    	if(actor.deathBegin)			return;
 		var shiftpos = {x:0,y:0};
 		if( actor.absBox.y < this.absBox.y && this.borderBlock.indexOf("N") !== -1)
 		{

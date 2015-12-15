@@ -25,6 +25,7 @@ WheelEnemy.prototype.init = function()
 	this.heading.y = 1;
 	this.unitSpeed = 0.04;
 
+	this.squadUnitLoadout=1;
 	this.wheelFilled = false;
 	this.wheelRadius = -100;
 	this.angleStagger = 30;
@@ -49,16 +50,20 @@ WheelEnemy.prototype.init = function()
 
 WheelEnemy.prototype.loadingData = function(data)
 {
+	if(!data.loadout)		this.squadLoadout=0;
 	SquadEnemy.prototype.loadingData.call(this,data);
 	this.wheelAngle = 0;
 	this.heading.y = 1;
 
-	if(data.loadout == 0 || !data.loadout) {
+	this.squadUnitLoadout=1;
+
+	if(data.loadout == 0) {
 		this.unitSpeed = 0.04;
 		this.squadCount = 5;
 		this.wheelRadius = -100;
 		this.angleStagger = 30;
 		this.wheelSpd = 0.04;
+		this.squadUnitType = 0;
 	}
 	if(data.loadout == 1) {
 		this.unitSpeed = 0.07;
@@ -66,6 +71,7 @@ WheelEnemy.prototype.loadingData = function(data)
 		this.wheelRadius = -120;
 		this.angleStagger = 35;
 		this.wheelSpd = 0.06;
+		this.squadUnitType = 1;
 	}
 	if(data.loadout == 2) {
 		this.unitSpeed = 0.05;
@@ -73,6 +79,7 @@ WheelEnemy.prototype.loadingData = function(data)
 		this.wheelRadius = -200;
 		this.angleStagger = 45;
 		this.wheelSpd = 0.06;
+		this.squadUnitType = 1;
 	}
 	if(data.loadout == 3) {
 		this.unitSpeed = 0.06;
@@ -80,6 +87,7 @@ WheelEnemy.prototype.loadingData = function(data)
 		this.wheelRadius = -60;
 		this.angleStagger = 60;
 		this.wheelSpd = 0.25;
+		this.squadUnitType = 0;
 	}
 	if(data.loadout == 4) {
 		this.unitSpeed = 0.05;
@@ -87,6 +95,7 @@ WheelEnemy.prototype.loadingData = function(data)
 		this.wheelRadius = -30;
 		this.angleStagger = 90;
 		this.wheelSpd = 0.3;
+		this.squadUnitType = 2;
 	}
 	if(data.anglestagger)	this.angleStagger = data.anglestagger;
 	if(data.wheelradius)	this.wheelRadius = -data.wheelradius;
@@ -112,7 +121,6 @@ WheelEnemy.prototype.midStep = function(timeplace,stepnum,step) {
 };
 WheelEnemy.prototype.beginStep = function(stepnum,stepdata) {
 	if(this.squadClass == "SLOWDROP" && this.squadType < 10) {
-		console.log(stepnum);
 		if(stepnum==0) {
 			this.loadStep(1, 0, {});
 		}
@@ -120,7 +128,7 @@ WheelEnemy.prototype.beginStep = function(stepnum,stepdata) {
 			var WE = null;
 			for(var i=0; i<this.squadCount; i++) {
 				WE = CircleEnemy.alloc();
-				WE.loadingData( {class:"WHEELMAN",classtype:0} );
+				WE.loadingData( {class:"WHEELMAN",classtype:this.squadUnitType,loadout:this.squadUnitLoadout} );
 				WE.updatePosition(this.position);
 				WE.deadLength = this.wheelDeadLength;
 				this.wheelAngles[i] = (i-Math.floor(this.squadCount/2))*this.angleStagger;
@@ -145,9 +153,8 @@ WheelEnemy.prototype.beginStep = function(stepnum,stepdata) {
 
 WheelEnemy.prototype.draw = function()
 {
-	//	EnemyActor.prototype.draw.call(this);
-//	GAMEVIEW.drawBox(this.absBox, "#660000");
-	GAMEVIEW.drawCircle(this.position, this.radius, "#00FF00", 1);
+//	SquadEnemy.prototype.draw.call(this);
+//	GAMEVIEW.drawCircle(this.position, this.radius, "#00FF00", 1);
 };
 
 WheelEnemy.prototype.update = function()

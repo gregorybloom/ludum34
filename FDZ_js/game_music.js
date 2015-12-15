@@ -13,7 +13,7 @@ GAMEMUSIC={
   volume: 0.35,
 
   gameSongs:[],
-  currSong:1
+  currSong:0
 };
 
 //  https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Using_HTML5_audio_and_video
@@ -57,7 +57,7 @@ GAMEMUSIC.createAudioElement = function(urls) {
     audioElement.loop = true;
 
     for (var i = 0; i < urls.length; ++i) {
-
+        if(!urls[i])    continue;
         var typeStr = "audio/" + urls[i].split(".").pop();
 
         if (audioElement.canPlayType === undefined ||
@@ -168,7 +168,7 @@ GAMEMUSIC.playAudio = function(){
         this.audioComponents.gainNode.gain.value = this.volume;
     }
 
-    console.log('play audio: ' + this.gameSongs[this.currSong])
+    console.log('play audio: '+ this.currSong + '-'+ this.gameSongs[this.currSong])
         this.audioElement.play();
 
         this.playing = true;

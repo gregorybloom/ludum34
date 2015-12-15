@@ -51,16 +51,16 @@ GAMEVIEW.drawAll = function()
     var str = GAMEMODEL.activeObjs+" active objs";
     this.context.lineWidth = "3";
     this.context.strokeStyle = "#FFFFFF";
-    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
+//    this.context.strokeText(str,ScreenPt.x,ScreenPt.y);
     this.context.font = "10pt Arial";
     this.context.fillStyle = "#000000";
-    this.context.fillText(str,ScreenPt.x,ScreenPt.y);
+//    this.context.fillText(str,ScreenPt.x,ScreenPt.y);
 
     var ScreenPt = {x:160,y:585};
     var str = "";
     if(GAMEMODEL.gameSession != null && GAMEMODEL.gameSession.gameWorld != null)
     {
-        str=Math.floor(GAMEMODEL.gameSession.gameWorld.dropper.progress)+" progress";
+        str=Math.floor(GAMEMODEL.gameSession.gameWorld.dropper.progress/2)+" progress";
     }
     this.context.lineWidth = "3";
     this.context.strokeStyle = "#FFFFFF";
@@ -85,23 +85,23 @@ GAMEMODEL.readInput = function(inputobj)
         if(keyids['KEY_DASH'] == inputobj.keyID)
         {
             keyused = true;
-            if(!inputobj.keypress)      this.gameCamera.zoomOut();
+//            if(!inputobj.keypress)      this.gameCamera.zoomOut();
         }
         if(keyids['KEY_EQUALS'] == inputobj.keyID)
         {
             keyused = true;
-            if(!inputobj.keypress)      this.gameCamera.zoomIn();           
+//            if(!inputobj.keypress)      this.gameCamera.zoomIn();           
         }
 
         if(keyids['KEY_O'] == inputobj.keyID)
         {
             keyused = true;
-            if(!inputobj.keypress)      GAMEMUSIC.toggleAudio();            
+//            if(!inputobj.keypress)      GAMEMUSIC.toggleAudio();            
         }
         if(keyids['KEY_N'] == inputobj.keyID)
         {
             keyused = true;
-            if(!inputobj.keypress)      GAMEMUSIC.nextAudio();          
+//            if(!inputobj.keypress)      GAMEMUSIC.nextAudio();          
         }
         if(keyids['KEY_SQUAREBR_RIGHT'] == inputobj.keyID)
         {
@@ -198,13 +198,19 @@ GAMEMODEL.loadGame = function()
 
     console.log('loaded game');
 
-//    GAMEMUSIC.playAudio();
 
+    GAMEMUSIC.currSong=0;
+    GAMEMUSIC.playAudio();
     GAMEMODEL.fillDropper(D);
 };
 
 GAMEMODEL.fillDropper = function(dropper)
 {
+    dropper.addLoad(0,0,0,50,850,{type:"TEXT",data:{loadout:0,text:"CIRCLES IN THE CLOUDS",fsize:44}});
+    dropper.addLoad(0,0,200,50,850,{type:"TEXT",data:{loadout:0,text:"(unfinished version)",fsize:34}});
+
+    dropper.addLoad(0,0,1800,50,850,{type:"TEXT",data:{loadout:0,text:"That's all the new stuff for now :(",fsize:24}});
+
     dropper.addLoad(0,0,0,400,750,{type:"CIRCLE",data:{loadout:0}});
     dropper.addLoad(0,0,100,400,750,{type:"CIRCLE",data:{classtype:1}});
     dropper.addLoad(0,0,100,450,750,{type:"CIRCLE",data:{classtype:0}});
@@ -220,19 +226,20 @@ GAMEMODEL.fillDropper = function(dropper)
     dropper.addLoad(0,0,700,450,800,{type:"WHEEL",data:{loadout:2,wheelcount:6}});
     dropper.addLoad(0,0,1100,450,800,{type:"WHEEL",data:{loadout:3}});
     dropper.addLoad(0,0,1500,450,800,{type:"WHEEL",data:{loadout:4}});
+    dropper.addLoad(0,0,1750,450,800,{type:"WHEEL",data:{loadout:2,wheelcount:8}});
 
-    for(var i=0; i<50; i++) {
+    for(var i=0; i<15; i++) {
         var r1=Math.random()*0.75;
         var x1=Math.ceil(Math.random()*10)*50;
         var x2=(Math.random()*20)+45;
-        var m=Math.ceil(Math.random()*5)+3;
+        var m=Math.ceil(Math.random()*4)+3;
         for(var k=0; k<m; k++) {
-            dropper.addLoad(0,0,400+(i+r1)*50, x1+k*x2,850, {type:"CIRCLE",data:''});
+            dropper.addLoad(0,0,400+(i+r1)*130, x1+k*x2-20,850, {type:"CIRCLE",data:''});
         }
     }
 
-    for(var i=0; i<50; i++) {
-//        dropper.addLoad(0,0,200+i*100 ,Math.random()*600,800, {type:"CIRCLE",data:''});
+    for(var i=0; i<20; i++) {
+        dropper.addLoad(0,0,200+i*100,Math.random()*600,800, {type:"CIRCLE",data:{classtype:2}});
     }
 
     dropper.sortLoads();
